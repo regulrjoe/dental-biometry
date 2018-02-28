@@ -22,7 +22,7 @@ public:
     // Apply binarization to input image
     static cv::Mat Binarization(const cv::Mat&, const float&);
     // Apply binarization to polygon in input image
-    static cv::Mat Binarization(const cv::Mat&, const cv::Point*, const int&, const float&, const cv::Mat = cv::Mat());
+    static cv::Mat PolygonBinarization(const cv::Mat&, const cv::Point*, const int&, const float&, const cv::Mat = cv::Mat());
     // Apply local binarization to input image
     static cv::Mat LocalBinarization(const cv::Mat&, float, const int&, const int&);
 };

@@ -88,7 +88,7 @@ cv::Mat Filtering::Binarization(const cv::Mat& input, const float& thr) {
 //      points = polynomial points [topleft, topright, bottomright, bottomleft]
 //          points must be ordered clockwise
 //      pct_thr = Percentage threshold of binarization
-cv::Mat Filtering::Binarization(const cv::Mat& input, const cv::Point* pts, const int& npts, const float& pct_thr, const cv::Mat output) {
+cv::Mat Filtering::PolygonBinarization(const cv::Mat& input, const cv::Point* pts, const int& npts, const float& pct_thr, const cv::Mat output) {
     std::cout << "Applying binarization..." << std::endl;
     cv::Mat             local_output;
     cv::Mat             mask;
