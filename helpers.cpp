@@ -120,12 +120,20 @@ double Helpers::DiscreteStandardDeviation(const std::vector<int> &v) {
 
 }
 
-std::vector<int> Helpers::DerivativesOfVector(const std::vector<int> &v) {
+// Derive the values of a vector.
+// INPUT: v -> Vector to derive.
+// INPUT: d -> distance between values to derive.
+// OUTPUT: vector of derivatives
+std::vector<int> Helpers::DeriveVector(const std::vector<int>& v, const int& d) {
     std::vector<int> derivatives;
     int i;
     derivatives.push_back(0);
-    for (i = 1; i < (int)v.size(); i++)
-        derivatives.push_back(v.at(i) - v.at(i-1));
+    for (i = 1; i < (int)v.size(); i++) {
+        if (i > d)
+            derivatives.push_back(v.at(i) - v.at(i-d));
+        else
+            derivatives.push_back(v.at(i) - v.at(0));
+    }
 
     return derivatives;
 }

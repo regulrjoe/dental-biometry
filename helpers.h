@@ -23,7 +23,7 @@ public:
     // Get standard deviation of a vector of discrete values
     static double DiscreteStandardDeviation(const std::vector<int>&);
     // Get derivatives vector of an input vector of values
-    static std::vector<int> DerivativesOfVector(const std::vector<int>&);
+    static std::vector<int> DeriveVector(const std::vector<int>&, const int&);
     // Get the max value of a vector of integers at a given range
     static int MaxValueIndex(const std::vector<int>&, int = -1, int = -1);
     // Get the min value of a vector of integers at a given range
