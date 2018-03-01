@@ -28,7 +28,7 @@ public:
         return _lineprofile_column_spacing;
     }
     // Set line profiles column spacing
-    bool setLineProfileColumnSumnpacing(const int& cs) {
+    bool setLineProfileColumnSpacing(const int& cs) {
         if (cs < 1 || cs > 100)
             return false;
         _lineprofile_column_spacing = cs;
@@ -61,12 +61,11 @@ private:
 
 
     //// METHODS ////
-    // Define upper and lower crown points
-    void DefineCrownPoints();
-
     // Obtain derivatives of the vertical line profiles of image
     vector< pair< int, vector<int> > > DerivativeLineProfiles(const cv::Mat&, const int&, const int&);
 
+    // Define upper and lower crown points
+    void DefineCrownPoints();
 
     //// HELPFUL VISUALIZATION METHODS ////
     // Mark an X at input point
