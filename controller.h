@@ -56,7 +56,7 @@ public:
 
     //// PREPROCESSING ////
     bool applyMedian(const int& kernel_size) {
-        if (kernel_size < 3 || k % 2 == 0)
+        if (kernel_size < 3 || kernel_size % 2 == 0)
             return false;
         filtered_image = Filters::Median(filtered_image, kernel_size);
         return true;
@@ -79,7 +79,7 @@ public:
 
     // Get line profiles column spacing of segmentation algorithm
     int getSegmentationLineProfileColumnSpacing() {
-        return segmentation-getLineProfileColumnSpacing();
+        return segmentation->getLineProfileColumnSpacing();
     }
     // Set line profiles column spacing of segmentation algorithm
     bool setSegmentationLineProfileColumnSpacing(const int& cs) {
