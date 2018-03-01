@@ -1,10 +1,35 @@
 #include <iostream>
 #include <opencv2/imgproc.hpp>
-#include "filtering.h"
+#include "filters.h"
 #include "histogram.h"
 
+
+// Apply median filter on input image
+cv::Mat Filters::Median(const cv::Mat& input, const int& kernel_size) {
+    std::cout << "Applying median filter..." << std::endl;
+    cv::Mat output;
+
+    input.copyTo(output);
+
+    cv::blur(input, output, kernel_size);
+
+    return output;
+}
+
+// Apply bilateral filter on input image
+cv::Mat Filters::Bilateral(const cv::Mat& input, const int& sigmas) {
+    std::cout << "Applying bilateral filer..." << std::endl;
+    cv::Mat output;
+
+    input.copyTo(output);
+
+    cv::bilateralFilter(input, output, 0, sigmas, sigmas);
+
+    return output;
+}
+
 // Apply contrast enhancement on image with top-hat and bottom-hat transforms
-cv::Mat Filtering::ContrastEnhancement(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
+cv::Mat Filters::ContrastEnhancement(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
     std::cout << "Applying contrast enhancement..." << std::endl;
     cv::Mat output;
 
@@ -16,7 +41,7 @@ cv::Mat Filtering::ContrastEnhancement(const cv::Mat& input, const float& struct
 }
 
 // Apply Top-hat transform on input image
-cv::Mat Filtering::TopHat(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
+cv::Mat Filters::TopHat(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
     std::cout << "Applying Top-Hat transform..." << std::endl;
     cv::Mat output, element;
     cv::Size struct_size;
@@ -32,7 +57,7 @@ cv::Mat Filtering::TopHat(const cv::Mat& input, const float& struct_width, const
 }
 
 // Apply Bottom-hat transform on input image
-cv::Mat Filtering::BottomHat(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
+cv::Mat Filters::BottomHat(const cv::Mat& input, const float& struct_width, const float& struct_height, const int& struct_type) {
     std::cout << "Applying Bottom-Hat transform..." << std::endl;
     cv::Mat output, element;
     cv::Size struct_size;
@@ -48,7 +73,7 @@ cv::Mat Filtering::BottomHat(const cv::Mat& input, const float& struct_width, co
 }
 
 // Apply Closing operation (Erosion -> Dilation)
-cv::Mat Filtering::Closing(const cv::Mat& input, const int& struct_width, const int& struct_height, const int& struct_type) {
+cv::Mat Filters::Closing(const cv::Mat& input, const int& struct_width, const int& struct_height, const int& struct_type) {
     std::cout << "Applying closing operation..." << std::endl;
     cv::Mat output, element;
     // Create structure element
@@ -60,7 +85,7 @@ cv::Mat Filtering::Closing(const cv::Mat& input, const int& struct_width, const 
 }
 
 // Apply Erosion transform to input image
-cv::Mat Filtering::Erode(const cv::Mat& input, const int& struct_width, const int& struct_height, const int& struct_type) {
+cv::Mat Filters::Erode(const cv::Mat& input, const int& struct_width, const int& struct_height, const int& struct_type) {
     std::cout << "Applying erosion..." << std::endl;
     cv::Mat output, element;
     // Create structure element
@@ -72,7 +97,7 @@ cv::Mat Filtering::Erode(const cv::Mat& input, const int& struct_width, const in
 }
 
 // Apply binarization to input image
-cv::Mat Filtering::Binarization(const cv::Mat& input, const float& thr) {
+cv::Mat Filters::Binarization(const cv::Mat& input, const float& thr) {
     std::cout << "Applying binarization..." << std::endl;
     cv::Mat output;
     // Apply binarization
@@ -88,7 +113,7 @@ cv::Mat Filtering::Binarization(const cv::Mat& input, const float& thr) {
 //      points = polynomial points [topleft, topright, bottomright, bottomleft]
 //          points must be ordered clockwise
 //      pct_thr = Percentage threshold of binarization
-cv::Mat Filtering::PolygonBinarization(const cv::Mat& input, const cv::Point* pts, const int& npts, const float& pct_thr, const cv::Mat output) {
+cv::Mat Filters::PolygonBinarization(const cv::Mat& input, const cv::Point* pts, const int& npts, const float& pct_thr, const cv::Mat output) {
     std::cout << "Applying binarization..." << std::endl;
     cv::Mat             local_output;
     cv::Mat             mask;
@@ -152,7 +177,7 @@ cv::Mat Filtering::PolygonBinarization(const cv::Mat& input, const cv::Point* pt
 }
 
 // Apply local binarization to input image
-cv::Mat Filtering::LocalBinarization(const cv::Mat& input, float pct_thr, const int& n_rows, const int& n_cols) {
+cv::Mat Filters::LocalBinarization(const cv::Mat& input, float pct_thr, const int& n_rows, const int& n_cols) {
     std::cout << "Applying local binarization..." << std::endl;
     cv::Mat     output;
     cv::Mat     local;
