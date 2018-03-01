@@ -11,7 +11,7 @@ cv::Mat Filters::Median(const cv::Mat& input, const int& kernel_size) {
 
     input.copyTo(output);
 
-    cv::blur(input, output, kernel_size);
+    cv::blur(input, output, cv::Size(kernel_size, kernel_size));
 
     return output;
 }
