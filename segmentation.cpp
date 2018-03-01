@@ -3,6 +3,16 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
+// Default constructor
+Segmentation::Segmentation() {
+    cout << "Create instance of Segmentation." << endl;
+}
+
+// Destructor
+Segmentation::~Segmentation() {
+    cout << "Destroying instance of Segmentation." << endl;
+}
+
 // Run algorithm
 cv::Mat Segmentation::Process(const cv::Mat &input) {
     cout << "Running Segmentation..." << endl;
