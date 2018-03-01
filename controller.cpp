@@ -1,6 +1,3 @@
 #include "controller.h"
 
-Controller::Controller()
-{
-
-}
+Controller *Controller::singleton = 0;
