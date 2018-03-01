@@ -52,7 +52,7 @@ void Segmentation::DefineCrownPoints() {
     vector <pair <int, vector<int> > > line_profiles;
     line_profiles = DerivativeLineProfiles(
                 _image,
-                _lineprofile_col_spacing,
+                _lineprofile_column_spacing,
                 _lineprofile_derivative_distance);
 
     // Obtain maximum and minimum values of each line profile
