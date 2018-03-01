@@ -33,19 +33,21 @@ SOURCES += \
     segmentation.cpp \
     tracing.cpp \
     histogram.cpp \
-    filtering.cpp \
     controller.cpp \
-    helpers.cpp
+    helpers.cpp \
+    filters.cpp \
+    cqtopencvviewergl.cpp
 
 HEADERS += \
         mainwindow.h \
     segmentation.h \
     tracing.h \
     histogram.h \
-    filtering.h \
     controller.h \
     helpers.h \
-    spline.h
+    spline.h \
+    filters.h \
+    cqtopencvviewergl.h
 
 FORMS += \
         mainwindow.ui
