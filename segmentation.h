@@ -1,6 +1,7 @@
 #ifndef SEGMENTATION_H
 #define SEGMENTATION_H
 
+#include <iostream>
 #include <vector>
 #include <opencv2/core.hpp>
 
@@ -9,24 +10,21 @@ using namespace std;
 class Segmentation
 {
 public:
-    // Default constructor
-    Segmentation();
-
-    // Parameterized constructor
-//    Segmentation();
+    // Empty constructor
+    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5) {
+        cout << "Create instance of Segmentation." << endl;
+    }
 
     // Destructor
-    ~Segmentation();
+    ~Segmentation() {
+        cout << "Destroying instance of Segmentation." << endl;
+    }
 
     // Run algorithm
     cv::Mat Process(const cv::Mat&);
 
 
     //// SETTERS AND GETTERS ////
-    // Get line profiles column spacing
-    int getLineProfileColumnSpacing() {
-        return _lineprofile_column_spacing;
-    }
     // Set line profiles column spacing
     bool setLineProfileColumnSpacing(const int& cs) {
         if (cs < 1 || cs > 100)
@@ -34,9 +32,9 @@ public:
         _lineprofile_column_spacing = cs;
         return true;
     }
-    // Get line profiles derivative distance
-    int getLineProfileDerivativeDistance() {
-        return _lineprofile_derivative_distance;
+    // Get line profiles column spacing
+    int getLineProfileColumnSpacing() {
+        return _lineprofile_column_spacing;
     }
     // Set line profiles derivative distance
     bool setLineProfileDerivativeDistance(const int& dd) {
@@ -44,6 +42,10 @@ public:
             return false;
         _lineprofile_derivative_distance = dd;
         return true;
+    }
+    // Get line profiles derivative distance
+    int getLineProfileDerivativeDistance() {
+        return _lineprofile_derivative_distance;
     }
 
 private:
@@ -66,6 +68,7 @@ private:
 
     // Define upper and lower crown points
     void DefineCrownPoints();
+
 
     //// HELPFUL VISUALIZATION METHODS ////
     // Mark an X at input point
