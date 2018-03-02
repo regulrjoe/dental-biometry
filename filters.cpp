@@ -6,19 +6,19 @@
 
 // Apply median filter on input image
 cv::Mat Filters::Median(const cv::Mat& input, const int& kernel_size) {
-    std::cout << "Applying median filter..." << std::endl;
+    std::cout << "Applying median filter with kernel size " << kernel_size << std::endl;
     cv::Mat output;
 
     input.copyTo(output);
 
-    cv::blur(input, output, cv::Size(kernel_size, kernel_size));
+    cv::medianBlur(input, output, kernel_size);
 
     return output;
 }
 
 // Apply bilateral filter on input image
 cv::Mat Filters::Bilateral(const cv::Mat& input, const int& sigmas) {
-    std::cout << "Applying bilateral filer..." << std::endl;
+    std::cout << "Applying bilateral filer with sigma " << sigmas << std::endl;
     cv::Mat output;
 
     input.copyTo(output);
