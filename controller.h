@@ -50,23 +50,42 @@ public:
         return filtered_image;
     }
 
-    void restoreImage() {
+    void resetImage() {
         input_image.copyTo(filtered_image);
     }
 
     //// PREPROCESSING ////
-    bool applyMedian(const int& kernel_size) {
-        if (kernel_size < 3 || kernel_size % 2 == 0)
-            return false;
-        filtered_image = Filters::Median(filtered_image, kernel_size);
-        return true;
+    // Apply Median Filter to filtered_image
+    void applyMedian() {
+        filtered_image = Filters::Median(filtered_image, median_kernel_size);
     }
 
-    bool applyBilateral(const int& sigmas) {
-        if (sigmas < 0)
+    // Apply Bilateral Filter to filtered_image
+    void applyBilateral() {
+        filtered_image = Filters::Bilateral(filtered_image, bilateral_sigma);
+    }
+
+    // Set median kernel size
+    bool setMedianKernelSize(const int& k) {
+        if (k < 3 || k % 2 == 0 || k > 15)
             return false;
-        filtered_image = Filters::Bilateral(filtered_image, sigmas);
+        median_kernel_size = k;
         return true;
+    }
+    // Get median kernel size
+    int getMedianKernelSize() {
+        return median_kernel_size;
+    }
+    // Set bilateral sigma
+    bool setBilateralSigma(const int& s) {
+        if (s < 1 || s > 30)
+            return false;
+        bilateral_sigma = s;
+        return true;
+    }
+    // Get bilateral sigma
+    int getBilateralSigma() {
+        return bilateral_sigma;
     }
 
     //// SEGMENTATION ////
@@ -77,21 +96,21 @@ public:
         return true;
     }
 
-    // Get line profiles column spacing of segmentation algorithm
-    int getSegmentationLineProfileColumnSpacing() {
-        return segmentation->getLineProfileColumnSpacing();
-    }
     // Set line profiles column spacing of segmentation algorithm
     bool setSegmentationLineProfileColumnSpacing(const int& cs) {
         return segmentation->setLineProfileColumnSpacing(cs);
     }
-    // Get line profiles derivative distance of segmentation algorithm
-    int getSegmentationLineProfileDerivativeDistance() {
-        return segmentation->getLineProfileDerivativeDistance();
+    // Get line profiles column spacing of segmentation algorithm
+    int getSegmentationLineProfileColumnSpacing() {
+        return segmentation->getLineProfileColumnSpacing();
     }
     // Set line profiles derivative distance of segmentation algorithm
     bool setSegmentationLineProfileDerivativeDistance(const int& dd) {
         return segmentation->setLineProfileDerivativeDistance(dd);
+    }
+    // Get line profiles derivative distance of segmentation algorithm
+    int getSegmentationLineProfileDerivativeDistance() {
+        return segmentation->getLineProfileDerivativeDistance();
     }
 
 private:
@@ -104,7 +123,10 @@ private:
     cv::Mat input_image;
     // Filtered image
     cv::Mat filtered_image;
-
+    // Median Filter kernel size
+    int median_kernel_size = 5;
+    // Bilateral Filter sigma size/color
+    int bilateral_sigma = 9;
 
     //// METHODS ////
     // Private constructor
