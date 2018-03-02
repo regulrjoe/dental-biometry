@@ -13,8 +13,8 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
     // Define upper and lower crown points in image
     DefineCrownPoints();
 
-    _display_image = DrawXAtPoints(_image, _crowns.first, cv::Vec3b(0, 0, 255));
-    _display_image = DrawXAtPoints(_image, _crowns.second, cv::Vec3b(255, 0, 0));
+    _display_image = DrawXAtPoints(_display_image, _crowns.first, cv::Vec3b(0, 0, 255));
+    _display_image = DrawXAtPoints(_display_image, _crowns.second, cv::Vec3b(255, 0, 0));
 
     ShowDisplayImage();
 
