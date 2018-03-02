@@ -18,9 +18,9 @@ public:
 private slots:
     void on_actionOpen_Image_triggered();
 
-    void on_sliderMedian_sliderMoved(int position);
+    void on_sliderMedian_valueChanged(int value);
 
-    void on_sliderBilateral_sliderMoved(int position);
+    void on_sliderBilateral_valueChanged(int value);
 
     void on_numMedian_valueChanged(int arg1);
 
@@ -32,11 +32,11 @@ private slots:
 
     void on_btnClearFilters_clicked();
 
-    void on_btnApplySegmentation_clicked();
-
     void on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1);
 
     void on_numSegmentationLineProfileDerivativeDistance_valueChanged(int arg1);
+
+    void on_btnApplySegmentation_clicked();
 
 private:
     Ui::MainWindow *ui;

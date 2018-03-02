@@ -56,6 +56,9 @@
        </item>
        <item row="0" column="3">
         <widget class="QPushButton" name="btnApplyMedian">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Apply</string>
          </property>
@@ -63,6 +66,9 @@
        </item>
        <item row="1" column="3">
         <widget class="QPushButton" name="btnApplyBilateral">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Apply</string>
          </property>
@@ -74,7 +80,7 @@
           <number>1</number>
          </property>
          <property name="maximum">
-          <number>8</number>
+          <number>7</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -83,6 +89,9 @@
        </item>
        <item row="2" column="0" colspan="4">
         <widget class="QPushButton" name="btnClearFilters">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Clear Filters</string>
          </property>
@@ -91,7 +100,7 @@
        <item row="0" column="2">
         <widget class="QSpinBox" name="numMedian">
          <property name="minimum">
-          <number>1</number>
+          <number>3</number>
          </property>
          <property name="maximum">
           <number>15</number>
@@ -131,6 +140,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="1" column="1">
         <widget class="QSpinBox" name="numSegmentationLineProfileDerivativeDistance">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimum">
           <number>1</number>
          </property>
@@ -148,6 +160,9 @@
        </item>
        <item row="0" column="1">
         <widget class="QSpinBox" name="numSegmentationLineProfileColumnSpacing">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimum">
           <number>1</number>
          </property>
@@ -165,6 +180,9 @@
        </item>
        <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="btnApplySegmentation">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Apply Segmentation</string>
          </property>
@@ -178,7 +196,7 @@
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
-        <verstretch>3</verstretch>
+        <verstretch>5</verstretch>
        </sizepolicy>
       </property>
      </widget>
