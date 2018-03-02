@@ -33,7 +33,7 @@ public:
 
     // Read image from file and set as input image
     bool setInputImage(const std::string& filename) {
-        input_image = cv::imread(filename);
+        input_image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
         if (!input_image.data)
             return false;
         input_image.copyTo(filtered_image);
