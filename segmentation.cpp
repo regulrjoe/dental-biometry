@@ -57,18 +57,18 @@ void Segmentation::DefineCrownPoints() {
     // Obtain maximum and minimum values of each line profile
     int i,
         col,
-        max_value_row,
-        min_value_row;
+        min_value_row,
+        max_value_row;
 
     for (i = 0; i < (int)line_profiles.size(); i++) {
         col = line_profiles.at(i).first;
-        max_value_row = Helpers::MaxValueIndex(line_profiles.at(i).second, -1, -1);
         min_value_row = Helpers::MinValueIndex(line_profiles.at(i).second, -1, -1);
+        max_value_row = Helpers::MaxValueIndex(line_profiles.at(i).second, -1, -1);
 
-        // Maximum value's row must above minimum value's row to be valid
-        if (max_value_row < min_value_row ) {
-            _crowns.first.push_back(cv::Point(col, max_value_row));
-            _crowns.second.push_back(cv::Point(col, min_value_row));
+        // Minimum value's row must above maximum value's row to be valid
+        if (min_value_row < max_value_row ) {
+            _crowns.first.push_back(cv::Point(col, min_value_row));
+            _crowns.second.push_back(cv::Point(col, max_value_row));
         }
     }
 }
