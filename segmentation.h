@@ -74,6 +74,9 @@ private:
     // Mark an X at input point
     cv::Mat DrawXAtPoints(const cv::Mat&, const vector<cv::Point>&, const cv::Vec3b&, const int& = 2);
 
+    // Draw an image-length horizontal line at input row
+    cv::Mat DrawRow(const cv::Mat&, const int&, const cv::Vec3b&);
+
     // Show display image
     void ShowDisplayImage();
 

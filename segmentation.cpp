@@ -100,6 +100,20 @@ cv::Mat Segmentation::DrawXAtPoints(const cv::Mat& input, const vector<cv::Point
     return output;
 }
 
+// Draw an image-length horizontal line at input row
+cv::Mat Segmentation::DrawRow(const cv::Mat& input, const int& row, const cv::Vec3b& color) {
+    cv::Mat output;
+
+    input.copyTo(output);
+
+    cv::line(output,
+             cv::Point(0, row),
+             cv::Point(output.cols-1, row),
+             color);
+
+    return output;
+}
+
 // Display draw image
 void Segmentation::ShowDisplayImage() {
     cv::imshow("Display Image", _display_image);
