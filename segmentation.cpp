@@ -13,6 +13,9 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
     // Define upper and lower crown points in image
     DefineCrownPoints();
 
+    // Remove crown points too far from avg row to be valid
+    RemoveAfarCrownPoints();
+
     _display_image = DrawXAtPoints(_display_image, _crowns.first, cv::Vec3b(0, 0, 255));
     _display_image = DrawXAtPoints(_display_image, _crowns.second, cv::Vec3b(255, 0, 0));
 
@@ -27,7 +30,7 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
 // INPUT: dd -> Derivative distance between values
 // OUTPUT: vector of pairs <column, profile>
 vector <pair <int, vector<int> > > Segmentation::DerivativeLineProfiles(const cv::Mat& img, const int& sp, const int& dd) {
-    int c; // column iterator
+    int c;
     vector <pair <int, vector<int> > > profiles;   // output map <column, vector of values>
 
     for (c = 0; c < img.cols; c += sp) {
@@ -54,7 +57,9 @@ void Segmentation::DefineCrownPoints() {
                 _lineprofile_column_spacing,
                 _lineprofile_derivative_distance);
 
-    // Obtain maximum and minimum values of each line profile
+    // Obtain minimum and maximum derivative values of each line profile
+    // Minimum derivative is an upper jaw point
+    // Maximum derivative is a lower jaw point
     int i,
         col,
         min_value_row,
@@ -73,12 +78,70 @@ void Segmentation::DefineCrownPoints() {
     }
 }
 
+// Remove crown points too far from avg row to be valid
+void Segmentation::RemoveAfarCrownPoints() {
+    int i;
+
+    // Obtain average row upper crown points and lower crown points
+    int upper_crowns_row_sum,
+        lower_crowns_row_sum;
+
+    upper_crowns_row_sum = 0;
+    lower_crowns_row_sum = 0;
+
+    for (i = 0; i < (int)_crowns.first.size(); i++)
+        upper_crowns_row_sum += _crowns.first.at(i).y;
+    for (i = 0; i < (int)_crowns.second.size(); i++)
+        lower_crowns_row_sum += _crowns.second.at(i).y;
+
+    int upper_crowns_avg_row,
+        lower_crowns_avg_row;
+
+    upper_crowns_avg_row = upper_crowns_row_sum / (int)_crowns.first.size();
+    lower_crowns_avg_row = lower_crowns_row_sum / (int)_crowns.second.size();
+
+    // Obtain middle row between both averages
+    int middle_avg_row;
+
+    middle_avg_row = (upper_crowns_avg_row + lower_crowns_avg_row) / 2;
+
+    // Draw rows for visualization
+//    _display_image = DrawRow(_display_image, upper_crowns_avg_row, cv::Vec3b(225, 225, 0));
+//    _display_image = DrawRow(_display_image, lower_crowns_avg_row, cv::Vec3b(225, 225, 0));
+//    _display_image = DrawRow(_display_image, middle_avg_row, cv::Vec3b(0, 225, 225));
+
+    // Define limits for upper crown points and lower crown points
+    pair<int, int> upper_crown_limits;
+    pair<int, int> lower_crown_limits;
+
+    upper_crown_limits.first = upper_crowns_avg_row - abs(upper_crowns_avg_row - middle_avg_row);
+    upper_crown_limits.second = middle_avg_row;
+
+    lower_crown_limits.first = middle_avg_row;
+    lower_crown_limits.second = lower_crowns_avg_row + abs(lower_crowns_avg_row - middle_avg_row);
+
+    // Remove upper crown points outside the limits
+    for (i = 0; i < (int)_crowns.first.size(); i++) {
+        if (_crowns.first.at(i).y < upper_crown_limits.first ||
+                _crowns.first.at(i).y > upper_crown_limits.second) {
+            _crowns.first.erase(_crowns.first.begin() + i);
+            i--;
+        }
+    }
+
+    // Remove lower crow points outside the limits
+    for (i = 0; i < (int)_crowns.second.size(); i++) {
+        if (_crowns.second.at(i).y < lower_crown_limits.first ||
+                _crowns.second.at(i).y > lower_crown_limits.second) {
+            _crowns.second.erase(_crowns.second.begin() + i);
+            i--;
+        }
+    }
+}
+
+//// HELPFUL VISUALIZATION METHODS ////
+
 // Mark an X at input point
-// INPUT: img -> image to draw on
-// INPUT: points -> vector of points to draw
-// INPUT: color -> color of X marks
-// INPUT: x_size -> lenght of X to draw
-// OUTPUT: image with points marked
 cv::Mat Segmentation::DrawXAtPoints(const cv::Mat& input, const vector<cv::Point>& points, const cv::Vec3b& color, const int& x_size) {
     int i, j;
     cv::Mat output;

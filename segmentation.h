@@ -69,6 +69,8 @@ private:
     // Define upper and lower crown points
     void DefineCrownPoints();
 
+    // Remove crown points too far from avg row to be valid
+    void RemoveAfarCrownPoints();
 
     //// HELPFUL VISUALIZATION METHODS ////
     // Mark an X at input point
