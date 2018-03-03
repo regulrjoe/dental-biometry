@@ -5,9 +5,6 @@
 
 class Filters
 {
-    // Disallow creating an instance of this object
-    Filters() {}
-
 public:
     // Apply median filter on input image
     static cv::Mat Median(const cv::Mat&, const int&);
@@ -38,6 +35,10 @@ public:
 
     // Apply local binarization to input image
     static cv::Mat LocalBinarization(const cv::Mat&, float, const int&, const int&);
+
+private:
+    // Disallow creating an instance of this object
+    Filters() {}
 };
 
 #endif // FILTERS_H

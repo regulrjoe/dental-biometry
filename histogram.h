@@ -6,8 +6,6 @@
 
 class Histogram
 {
-    Histogram() {}
-
 public:
     // Get histogram of an image
     static std::vector<int> GetHistogram(cv::Mat&);
@@ -17,6 +15,10 @@ public:
 
     // Get the threshold of an histogram when the amount of brightest pixels crosses a given percentage
     static int GetThreshold(const std::vector<int>&, const float&);
+
+private:
+    // Disallow creating an instance of this object
+    Histogram() {}
 };
 
 #endif // HISTOGRAM_H

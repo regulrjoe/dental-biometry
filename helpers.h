@@ -4,11 +4,8 @@
 #include <vector>
 #include <opencv2/core.hpp>
 
-class Helpers {
-private:
-    // Disallow creating an instance of this object
-    Helpers() {}
-
+class Helpers
+{
 public:
     // Get the slope of two pixels
     static double GetSlope(const cv::Point&, const cv::Point&);
@@ -45,6 +42,10 @@ public:
 
     // Fit a Spline function line to a group of points
     static std::vector<cv::Point> FitSpline(const std::vector<cv::Point>&, const int&, const int&, const int& = -1);
+
+private:
+    // Disallow creating an instance of this object
+    Helpers() {}
 };
 
 #endif // HELPERS_H
