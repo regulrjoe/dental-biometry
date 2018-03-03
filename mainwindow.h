@@ -38,6 +38,8 @@ private slots:
 
     void on_btnApplySegmentation_clicked();
 
+    void on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
 };

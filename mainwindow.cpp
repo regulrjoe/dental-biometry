@@ -17,11 +17,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //// SEGMENTATION DEFAULT PARAMETERS ////
     ui->numSegmentationLineProfileColumnSpacing->setValue(Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
     ui->numSegmentationLineProfileDerivativeDistance->setValue(Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
+    ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
 
-    /////////////////////////////////
     /* Code for faster testing.
      * Remove when done testing. */
-    /////////////////////////////////
+
     QString filename = "/Users/regulrjoe/Documents/CIO/BiometriaDental/imgs/clean/cropped/0000012558_JOSE_ALBETO_SAUCEDO_Panorama_20161205112500.jpg";
     Controller::getInstance()->setInputImage(filename.toUtf8().data());
     ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
@@ -116,7 +116,7 @@ void MainWindow::on_btnClearFilters_clicked()
 void MainWindow::on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setSegmentationLineProfileColumnSpacing(arg1)) {
-        QMessageBox::warning(this, tr("Invalid Column Spacing"), tr("Column spacing must be greater than 0 and equal or lower than 100."));
+        QMessageBox::warning(this, tr("Invalid Column Spacing"), tr("Column spacing must be greater than 0 and equal to or lower than 100."));
         ui->numSegmentationLineProfileColumnSpacing->setValue(Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
     }
 }
@@ -124,8 +124,16 @@ void MainWindow::on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg
 void MainWindow::on_numSegmentationLineProfileDerivativeDistance_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setSegmentationLineProfileDerivativeDistance(arg1)) {
-        QMessageBox::warning(this, tr("Invalid Derivative Distance"), tr("Derivative distance must be greater than 0 and equal or lower than 100."));
+        QMessageBox::warning(this, tr("Invalid Derivative Distance"), tr("Derivative distance must be greater than 0 and equal to or lower than 100."));
         ui->numSegmentationLineProfileDerivativeDistance->setValue(Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
+    }
+}
+
+void MainWindow::on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1)
+{
+    if (!Controller::getInstance()->setSegmentationSplineRelativeSampleSize((float)arg1)) {
+        QMessageBox::warning(this, tr("Invalid Spline Curve Relative Sample Size"), tr("The relative sample size must be greater than 0.00 and equal to or lower than 1.00"));
+        ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
     }
 }
 
@@ -133,5 +141,3 @@ void MainWindow::on_btnApplySegmentation_clicked()
 {
     Controller::getInstance()->runSegmentation();
 }
-
-

@@ -1,5 +1,6 @@
 #include "segmentation.h"
 #include "helpers.h"
+#include "visualizationhelpers.h"
 #include <opencv2/opencv.hpp>
 
 // Run algorithm
@@ -11,13 +12,21 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
     cv::cvtColor(input, _display_image, CV_GRAY2RGB, 3);
 
     // Define upper and lower crown points in image
-    DefineCrownPoints();
+    DefineCrownPoints(_lineprofile_column_spacing, _lineprofile_derivative_distance);
 
     // Remove crown points too far from avg row to be valid
     RemoveAfarCrownPoints();
 
-    _display_image = DrawXAtPoints(_display_image, _crowns.first, cv::Vec3b(0, 0, 255));
-    _display_image = DrawXAtPoints(_display_image, _crowns.second, cv::Vec3b(255, 0, 0));
+    // Visualize crown points
+    _display_image = VisualizationHelpers::DrawXAtPoints(_display_image, _crowns.first, cv::Vec3b(0, 0, 255));
+    _display_image = VisualizationHelpers::DrawXAtPoints(_display_image, _crowns.second, cv::Vec3b(255, 0, 0));
+
+    // Adjust Spline curve to crown points
+    AdjustCrownsCurve(_spline_relative_sample_size);
+
+    // Visualize crown curves
+    _display_image = VisualizationHelpers::DrawVector(_display_image, _crown_curves.first, cv::Vec3b(0, 225, 225));
+    _display_image = VisualizationHelpers::DrawVector(_display_image, _crown_curves.second, cv::Vec3b(0, 225, 225));
 
     ShowDisplayImage();
 
@@ -47,15 +56,15 @@ vector <pair <int, vector<int> > > Segmentation::DerivativeLineProfiles(const cv
 }
 
 // Define upper and lower crown points
-void Segmentation::DefineCrownPoints() {
+void Segmentation::DefineCrownPoints(const int& column_spacing, const int& derivative_difference) {
     cout << "Defining Jaw Points... " << endl;
 
     // Obtain derivatives of the vertical line profiles of _image
     vector <pair <int, vector<int> > > line_profiles;
     line_profiles = DerivativeLineProfiles(
                 _image,
-                _lineprofile_column_spacing,
-                _lineprofile_derivative_distance);
+                column_spacing,
+                derivative_difference);
 
     // Obtain minimum and maximum derivative values of each line profile
     // Minimum derivative is an upper jaw point
@@ -100,30 +109,35 @@ void Segmentation::RemoveAfarCrownPoints() {
     upper_crowns_avg_row = upper_crowns_row_sum / (int)_crowns.first.size();
     lower_crowns_avg_row = lower_crowns_row_sum / (int)_crowns.second.size();
 
+    cout << "upper crowns avg row: " << upper_crowns_avg_row << endl;
+    cout << "lower crowns avg row: " << lower_crowns_avg_row << endl;
+
     // Obtain middle row between both averages
     int middle_avg_row;
 
     middle_avg_row = (upper_crowns_avg_row + lower_crowns_avg_row) / 2;
 
+    cout << "middle avg row: " << middle_avg_row << endl;
+
     // Draw rows for visualization
-//    _display_image = DrawRow(_display_image, upper_crowns_avg_row, cv::Vec3b(225, 225, 0));
-//    _display_image = DrawRow(_display_image, lower_crowns_avg_row, cv::Vec3b(225, 225, 0));
-//    _display_image = DrawRow(_display_image, middle_avg_row, cv::Vec3b(0, 225, 225));
+//    _display_image = VisualizationHelpers::DrawRow(_display_image, upper_crowns_avg_row, cv::Vec3b(225, 225, 0));
+//    _display_image = VisualizationHelpers::DrawRow(_display_image, lower_crowns_avg_row, cv::Vec3b(225, 225, 0));
+//    _display_image = VisualizationHelpers::DrawRow(_display_image, middle_avg_row, cv::Vec3b(0, 225, 225));
 
     // Define limits for upper crown points and lower crown points
     pair<int, int> upper_crown_limits;
     pair<int, int> lower_crown_limits;
 
     upper_crown_limits.first = upper_crowns_avg_row - abs(upper_crowns_avg_row - middle_avg_row);
-    upper_crown_limits.second = middle_avg_row;
+    upper_crown_limits.second = lower_crowns_avg_row;
 
-    lower_crown_limits.first = middle_avg_row;
+    lower_crown_limits.first = upper_crowns_avg_row;
     lower_crown_limits.second = lower_crowns_avg_row + abs(lower_crowns_avg_row - middle_avg_row);
 
     // Remove upper crown points outside the limits
     for (i = 0; i < (int)_crowns.first.size(); i++) {
-        if (_crowns.first.at(i).y < upper_crown_limits.first ||
-                _crowns.first.at(i).y > upper_crown_limits.second) {
+        if ((_crowns.first.at(i).y < upper_crown_limits.first) ||
+             (_crowns.first.at(i).y > upper_crown_limits.second)) {
             _crowns.first.erase(_crowns.first.begin() + i);
             i--;
         }
@@ -131,51 +145,27 @@ void Segmentation::RemoveAfarCrownPoints() {
 
     // Remove lower crow points outside the limits
     for (i = 0; i < (int)_crowns.second.size(); i++) {
-        if (_crowns.second.at(i).y < lower_crown_limits.first ||
-                _crowns.second.at(i).y > lower_crown_limits.second) {
+        if ((_crowns.second.at(i).y < lower_crown_limits.first) ||
+                (_crowns.second.at(i).y > lower_crown_limits.second)) {
             _crowns.second.erase(_crowns.second.begin() + i);
             i--;
         }
     }
 }
 
+// Adjust Spline curve to crown points
+void Segmentation::AdjustCrownsCurve(const float& relative_sample_size) {
+    int upper_curve_subsample_size,
+        lower_curve_subsample_size;
+
+    upper_curve_subsample_size = (int)_crowns.first.size() * relative_sample_size;
+    lower_curve_subsample_size = (int)_crowns.second.size() * relative_sample_size;
+
+    _crown_curves.first = Helpers::FitSpline(_crowns.first, 0, _image.cols, upper_curve_subsample_size);
+    _crown_curves.second = Helpers::FitSpline(_crowns.second, 0, _image.cols, lower_curve_subsample_size);
+}
+
 //// HELPFUL VISUALIZATION METHODS ////
-
-// Mark an X at input point
-cv::Mat Segmentation::DrawXAtPoints(const cv::Mat& input, const vector<cv::Point>& points, const cv::Vec3b& color, const int& x_size) {
-    int i, j;
-    cv::Mat output;
-
-    input.copyTo(output);
-    if (output.channels() < 3)
-        cv::cvtColor(output, output, CV_GRAY2RGB, 3);
-
-    for (i = 0; i < (int)points.size(); i++) {
-        output.at<cv::Vec3b>(points.at(i)) = color;
-        for (j = 1; j <= x_size; j++) {
-            output.at<cv::Vec3b>(cv::Point(points.at(i).x-j, points.at(i).y-j)) = color;
-            output.at<cv::Vec3b>(cv::Point(points.at(i).x+j, points.at(i).y-j)) = color;
-            output.at<cv::Vec3b>(cv::Point(points.at(i).x-j, points.at(i).y+j)) = color;
-            output.at<cv::Vec3b>(cv::Point(points.at(i).x+j, points.at(i).y+j)) = color;
-        }
-    }
-
-    return output;
-}
-
-// Draw an image-length horizontal line at input row
-cv::Mat Segmentation::DrawRow(const cv::Mat& input, const int& row, const cv::Vec3b& color) {
-    cv::Mat output;
-
-    input.copyTo(output);
-
-    cv::line(output,
-             cv::Point(0, row),
-             cv::Point(output.cols-1, row),
-             color);
-
-    return output;
-}
 
 // Display draw image
 void Segmentation::ShowDisplayImage() {

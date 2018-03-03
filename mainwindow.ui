@@ -138,6 +138,13 @@
        <string>Segmentation</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lblSegmentationLineProfileColumnSpacing">
+         <property name="text">
+          <string>Line profile column spacing</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="1">
         <widget class="QSpinBox" name="numSegmentationLineProfileDerivativeDistance">
          <property name="enabled">
@@ -148,13 +155,6 @@
          </property>
          <property name="maximum">
           <number>100</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Line profile column spacing</string>
          </property>
         </widget>
        </item>
@@ -171,20 +171,37 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Line profile derivative distance</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
+       <item row="3" column="0" colspan="2">
         <widget class="QPushButton" name="btnApplySegmentation">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
           <string>Apply Segmentation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lblSegmentationLineProfileDerivativeDistance">
+         <property name="text">
+          <string>Line profile derivative distance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lblSegmentationSplineRelativeSampleSize">
+         <property name="text">
+          <string>Spline curve relative sample size</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="numSegmentationSplineRelativeSampleSize">
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
          </property>
         </widget>
        </item>

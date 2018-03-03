@@ -36,7 +36,8 @@ SOURCES += \
     controller.cpp \
     helpers.cpp \
     filters.cpp \
-    cqtopencvviewergl.cpp
+    cqtopencvviewergl.cpp \
+    visualizationhelpers.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     helpers.h \
     spline.h \
     filters.h \
-    cqtopencvviewergl.h
+    cqtopencvviewergl.h \
+    visualizationhelpers.h
 
 FORMS += \
         mainwindow.ui

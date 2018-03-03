@@ -112,6 +112,14 @@ public:
     int getSegmentationLineProfileDerivativeDistance() {
         return segmentation->getLineProfileDerivativeDistance();
     }
+    // Set Spline curve relative sample size of segmentation algorithm
+    bool setSegmentationSplineRelativeSampleSize(const float& ss) {
+        return segmentation->setSplineRelativeSampleSize(ss);
+    }
+    // Get Spline cruve relative sample size of segmentation algorithm
+    float getSegmentationSplineRelativeSampleSize() {
+        return segmentation->getSplineRelativeSampleSize();
+    }
 
 private:
     //// ATTRIBUTES ////

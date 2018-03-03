@@ -11,7 +11,7 @@ class Segmentation
 {
 public:
     // Empty constructor
-    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5) {
+    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5), _spline_relative_sample_size(0.2) {
         cout << "Create instance of Segmentation." << endl;
     }
 
@@ -47,19 +47,36 @@ public:
     int getLineProfileDerivativeDistance() {
         return _lineprofile_derivative_distance;
     }
+    // Set Spline curve relative sample size
+    bool setSplineRelativeSampleSize(const float& ss) {
+        if (ss <= 0 || ss > 1)
+            return false;
+        _spline_relative_sample_size = ss;
+        return true;
+    }
+    // Get Spline curve relative sample size
+    float getSplineRelativeSampleSize() {
+        return _spline_relative_sample_size;
+    }
 
 private:
-    //// ATTRIBUTES ////
+    //// INTERNAL OBJECTS ////
     // Local copy of input image
     cv::Mat _image;
     // Local copy of _image for drawing and displaying
     cv::Mat _display_image;
+    // Pair of vectors with crown points <upper crowns, lower crowns>
+    pair< vector<cv::Point>, vector<cv::Point> > _crowns;
+    // Pair of vectors with crown curve points <upper crowns curve, lower crowns curve>
+    pair < vector<cv::Point>, vector<cv::Point> > _crown_curves;
+
+    //// PARAMETERS ////
     // Column spacing between line profiles
     int _lineprofile_column_spacing;
     // Distance between values in line profile to derive
     int _lineprofile_derivative_distance;
-    // Pair of vectors with crown points <upper crowns, lower crowns>
-    pair< vector<cv::Point>, vector<cv::Point> > _crowns;
+    // Sample size of crown points for adjusting Spline curve
+    float _spline_relative_sample_size;
 
 
     //// METHODS ////
@@ -67,17 +84,13 @@ private:
     vector< pair< int, vector<int> > > DerivativeLineProfiles(const cv::Mat&, const int&, const int&);
 
     // Define upper and lower crown points
-    void DefineCrownPoints();
+    void DefineCrownPoints(const int&, const int&);
 
     // Remove crown points too far from avg row to be valid
     void RemoveAfarCrownPoints();
 
-    //// HELPFUL VISUALIZATION METHODS ////
-    // Mark an X at input point
-    cv::Mat DrawXAtPoints(const cv::Mat&, const vector<cv::Point>&, const cv::Vec3b&, const int& = 2);
-
-    // Draw an image-length horizontal line at input row
-    cv::Mat DrawRow(const cv::Mat&, const int&, const cv::Vec3b&);
+    // Adjust Spline curve to crown points
+    void AdjustCrownsCurve(const float&);
 
     // Show display image
     void ShowDisplayImage();
