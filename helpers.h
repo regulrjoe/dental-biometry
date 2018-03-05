@@ -26,7 +26,7 @@ public:
     static double DiscreteStandardDeviation(const std::vector<int>&);
 
     // Get derivatives vector of an input vector of values
-    static std::vector<int> DeriveVector(const std::vector<int>&, const int&);
+    static std::vector<int> DeriveVector(const std::vector<int>&, const int& = 1);
 
     // Get the max value of a vector of integers at a given range
     static int MaxValueIndex(const std::vector<int>&, int = -1, int = -1);
