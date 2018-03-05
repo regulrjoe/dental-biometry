@@ -120,6 +120,14 @@ public:
     float getSegmentationSplineRelativeSampleSize() {
         return segmentation->getSplineRelativeSampleSize();
     }
+    // Set necks curves standard deviation threshold of segmentation algorithm
+    bool setSegmentationNecksCurvesStdDevThreshold(const float& thr) {
+        return segmentation->setNecksCurvesStdDevThreshold(thr);
+    }
+    // Get necks curves standard deviation threshold of segmentation algorithm
+    float getSegmentationNecksCurvesStdDevThreshold() {
+        return segmentation->getNecksCurvesStdDevThrehsold();
+    }
 
 private:
     //// ATTRIBUTES ////
