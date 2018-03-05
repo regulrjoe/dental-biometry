@@ -3,6 +3,7 @@
 #include "visualizationhelpers.h"
 #include <opencv2/opencv.hpp>
 
+
 // Run algorithm
 cv::Mat Segmentation::Process(const cv::Mat &input) {
     cout << "Running Segmentation..." << endl;
@@ -13,21 +14,25 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
 
     // Define upper and lower crown points in image
     DefineCrownPoints(_lineprofile_column_spacing, _lineprofile_derivative_distance);
-
     // Remove crown points too far from avg row to be valid
     RemoveAfarCrownPoints();
-
     // Visualize crown points
     _display_image = VisualizationHelpers::DrawXAtPoints(_display_image, _crowns.first, cv::Vec3b(0, 0, 255));
     _display_image = VisualizationHelpers::DrawXAtPoints(_display_image, _crowns.second, cv::Vec3b(255, 0, 0));
 
     // Adjust Spline curve to crown points
     AdjustCrownsCurve(_spline_relative_sample_size);
-
     // Visualize crown curves
     _display_image = VisualizationHelpers::DrawVector(_display_image, _crown_curves.first, cv::Vec3b(0, 225, 225));
     _display_image = VisualizationHelpers::DrawVector(_display_image, _crown_curves.second, cv::Vec3b(0, 225, 225));
 
+    // Translate crown curves to find necks curve
+    AdjustNecksCurve(_neck_sd_threshold);
+    // Visualize necks curves
+    _display_image = VisualizationHelpers::DrawVector(_display_image, _necks_curves.first, cv::Vec3b(225, 0, 225));
+    _display_image = VisualizationHelpers::DrawVector(_display_image, _necks_curves.second, cv::Vec3b(225, 0, 225));
+
+    // Adjust
     ShowDisplayImage();
 
     return _image;
@@ -38,9 +43,9 @@ cv::Mat Segmentation::Process(const cv::Mat &input) {
 // INPUT: sp -> column spacing between profiles
 // INPUT: dd -> Derivative distance between values
 // OUTPUT: vector of pairs <column, profile>
-vector <pair <int, vector<int> > > Segmentation::DerivativeLineProfiles(const cv::Mat& img, const int& sp, const int& dd) {
+vector< pair< int, vector<int> > > Segmentation::DerivativeLineProfiles(const cv::Mat& img, const int& sp, const int& dd) {
     int c;
-    vector <pair <int, vector<int> > > profiles;   // output map <column, vector of values>
+    vector< pair< int, vector<int> > > profiles;   // output map <column, vector of values>
 
     for (c = 0; c < img.cols; c += sp) {
         profiles.push_back(
@@ -60,7 +65,7 @@ void Segmentation::DefineCrownPoints(const int& column_spacing, const int& deriv
     cout << "Defining Jaw Points... " << endl;
 
     // Obtain derivatives of the vertical line profiles of _image
-    vector <pair <int, vector<int> > > line_profiles;
+    vector< pair< int, vector<int> > > line_profiles;
     line_profiles = DerivativeLineProfiles(
                 _image,
                 column_spacing,
@@ -163,6 +168,75 @@ void Segmentation::AdjustCrownsCurve(const float& relative_sample_size) {
 
     _crown_curves.first = Helpers::FitSpline(_crowns.first, 0, _image.cols, upper_curve_subsample_size);
     _crown_curves.second = Helpers::FitSpline(_crowns.second, 0, _image.cols, lower_curve_subsample_size);
+}
+
+// Translate crowns curve to find teeth's neck
+void Segmentation::AdjustNecksCurve(const float& sd_thr) {
+
+    // Get standard deviation of the derivatives of pixel values at initial position (crown curves) of upper and lower jaw
+    pair<double, double> initial_stddev;
+
+    initial_stddev.first = Helpers::DiscreteStandardDeviation(
+                Helpers::DeriveVector(
+                    Helpers::GrayscaleProfile(_image, _crown_curves.first)));
+    initial_stddev.second = Helpers::DiscreteStandardDeviation(
+                Helpers::DeriveVector(
+                    Helpers::GrayscaleProfile(_image, _crown_curves.second)));
+
+    // Translate upper curve upwards until the new standard deviation is lower than the sd_thr of the initial standard deviaiton
+    int i, j;
+    int max_translation =  150; // in pixels
+    int ppt = 5; // pixels per translation
+    pair< vector<cv::Point>, vector<cv::Point> > current_curves; // current curves at each translation
+    pair<double, double> current_stddev; // standard deviaion of the derivatives of pixel values at current curves
+
+    // Upper Jaw
+    current_curves.first = _crown_curves.first;
+    for (i = 0; i < max_translation; i += ppt) {
+
+        // Translate upper curve upwards
+        for (j = 0; j < (int)current_curves.first.size(); j++) {
+            // Maintain curve in bounds
+            if (current_curves.first.at(j).y - ppt >= 0)
+                current_curves.first.at(j).y -= ppt;
+            else
+                current_curves.first.at(j).y = 0;
+        }
+
+        // Get current standard deviation
+        current_stddev.first = Helpers::DiscreteStandardDeviation(
+                    Helpers::DeriveVector(
+                        Helpers::GrayscaleProfile(_image, current_curves.first)));
+
+        // Finish translating if current std dev is below sd_thr
+        if (current_stddev.first < initial_stddev.first * sd_thr)
+            break;
+    }
+    _necks_curves.first = current_curves.first;
+
+    // Lower Jaw
+    current_curves.second = _crown_curves.second;
+    for (i = 0; i < max_translation; i+= ppt) {
+
+        // Translate lower curve downwards
+        for (j = 0; j < (int)current_curves.second.size(); j++) {
+            // Maintain curve in bounds
+            if (current_curves.second.at(j).y + ppt < _image.rows)
+                current_curves.second.at(j).y += ppt;
+            else
+                current_curves.second.at(j).y = _image.rows - 1;
+        }
+
+        // Get current standard deviation
+        current_stddev.second = Helpers::DiscreteStandardDeviation(
+                    Helpers::DeriveVector(
+                        Helpers::GrayscaleProfile(_image, current_curves.second)));
+
+        // Finish translating if current std dev is below sd_thr
+        if (current_stddev.second < initial_stddev.second * sd_thr)
+            break;
+    }
+    _necks_curves.second = current_curves.second;
 }
 
 //// HELPFUL VISUALIZATION METHODS ////

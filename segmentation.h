@@ -11,7 +11,7 @@ class Segmentation
 {
 public:
     // Empty constructor
-    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5), _spline_relative_sample_size(0.2) {
+    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5), _spline_relative_sample_size(0.2), _neck_sd_threshold(0.45) {
         cout << "Create instance of Segmentation." << endl;
     }
 
@@ -58,6 +58,17 @@ public:
     float getSplineRelativeSampleSize() {
         return _spline_relative_sample_size;
     }
+    // Set necks curves standard deviation threhsold
+    bool setNecksCurvesStdDevThreshold(const float& thr) {
+        if (thr <= 0 || thr >= 1)
+            return false;
+        _neck_sd_threshold = thr;
+        return true;
+    }
+    // Get necks curves standard deviation threhsold
+    float getNecksCurvesStdDevThrehsold() {
+        return _neck_sd_threshold;
+    }
 
 private:
     //// INTERNAL OBJECTS ////
@@ -68,7 +79,9 @@ private:
     // Pair of vectors with crown points <upper crowns, lower crowns>
     pair< vector<cv::Point>, vector<cv::Point> > _crowns;
     // Pair of vectors with crown curve points <upper crowns curve, lower crowns curve>
-    pair < vector<cv::Point>, vector<cv::Point> > _crown_curves;
+    pair< vector<cv::Point>, vector<cv::Point> > _crown_curves;
+    // Pair of vectors with neck curve points <upper necks curve, lower necks curve>
+    pair< vector<cv::Point>, vector<cv::Point> > _necks_curves;
 
     //// PARAMETERS ////
     // Column spacing between line profiles
@@ -77,11 +90,12 @@ private:
     int _lineprofile_derivative_distance;
     // Sample size of crown points for adjusting Spline curve
     float _spline_relative_sample_size;
-
+    // Std Dev threshold for finding the necks curve
+    float _neck_sd_threshold;
 
     //// METHODS ////
     // Obtain derivatives of the vertical line profiles of image
-    vector< pair< int, vector<int> > > DerivativeLineProfiles(const cv::Mat&, const int&, const int&);
+    vector <pair < int, vector<int> > > DerivativeLineProfiles(const cv::Mat&, const int&, const int&);
 
     // Define upper and lower crown points
     void DefineCrownPoints(const int&, const int&);
@@ -91,6 +105,9 @@ private:
 
     // Adjust Spline curve to crown points
     void AdjustCrownsCurve(const float&);
+
+    // Translate crowns curve to find teeth's neck
+    void AdjustNecksCurve(const float&);
 
     // Show display image
     void ShowDisplayImage();
