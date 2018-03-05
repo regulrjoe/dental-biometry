@@ -40,6 +40,8 @@ private slots:
 
     void on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1);
 
+    void on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
 };

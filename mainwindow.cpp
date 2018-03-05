@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->numSegmentationLineProfileColumnSpacing->setValue(Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
     ui->numSegmentationLineProfileDerivativeDistance->setValue(Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
     ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
+    ui->numSegmentationNecksCurvesStdDevThreshold->setValue(Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
 
     /* Code for faster testing.
      * Remove when done testing. */
@@ -134,6 +135,14 @@ void MainWindow::on_numSegmentationSplineRelativeSampleSize_valueChanged(double 
     if (!Controller::getInstance()->setSegmentationSplineRelativeSampleSize((float)arg1)) {
         QMessageBox::warning(this, tr("Invalid Spline Curve Relative Sample Size"), tr("The relative sample size must be greater than 0.00 and equal to or lower than 1.00"));
         ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
+    }
+}
+
+void MainWindow::on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(double arg1)
+{
+    if (!Controller::getInstance()->setSegmentationNecksCurvesStdDevThreshold((float)arg1)) {
+        QMessageBox::warning(this, tr("Invalid Standard Deviation Threshold"), tr("The standard deviation threhsold must be greather than 0.00 and lower than 1.00"));
+        ui->numSegmentationNecksCurvesStdDevThreshold->setValue(Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
     }
 }
 
