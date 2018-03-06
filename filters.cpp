@@ -207,3 +207,36 @@ cv::Mat Filters::LocalBinarization(const cv::Mat& input, float pct_thr, const in
     }
     return output;
 }
+
+// Apply sobel filter to input image
+// d_type   -> 0 = horizontal + vertical
+//          -> 1 = horizontal
+//          -> 2 = vertical
+cv::Mat Filters::Sobel(const cv::Mat& input, const int& k_size, const int& d_type) {
+    cv::Mat output,
+            horizontal,
+            vertical;
+
+    if (d_type == 0 || d_type == 1)
+        cv::Sobel(input, horizontal, CV_32F, 1, 0, k_size);
+    if (d_type == 0 || d_type == 2)
+        cv::Sobel(input, vertical, CV_32F, 0, 1, k_size);
+
+    if (d_type == 0) {
+        cv::Mat magnitude;
+        cv::magnitude(horizontal, vertical, magnitude);
+
+        cv::normalize(magnitude, output, 0, 255, cv::NORM_MINMAX, CV_8U);
+    } else if (d_type == 1) {
+        cv::Mat abs_horizontal;
+        cv::convertScaleAbs(horizontal, abs_horizontal);
+
+        abs_horizontal.copyTo(output);
+    } else if (d_type == 2) {
+        cv::Mat abs_vertical;
+        cv::convertScaleAbs(vertical, abs_vertical);
+        abs_vertical.copyTo(output);
+    }
+
+    return output;
+}

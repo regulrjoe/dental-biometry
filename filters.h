@@ -36,6 +36,9 @@ public:
     // Apply local binarization to input image
     static cv::Mat LocalBinarization(const cv::Mat&, float, const int&, const int&);
 
+    // Apply sobel filter to input image
+    static cv::Mat Sobel(const cv::Mat&, const int& = 3, const int& = 0);
+
 private:
     // Disallow creating an instance of this object
     Filters() {}
