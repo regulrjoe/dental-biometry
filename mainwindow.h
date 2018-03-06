@@ -26,7 +26,7 @@ private slots:
 
     void on_btnApplyBilateralSegmentation_clicked();
 
-    void on_btnClearFiltersSegmentation_clicked();
+    void on_btnClearImageSegmentation_clicked();
 
     void on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1);
 

@@ -10,9 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //// PREPROCESSING DEFAULT PARAMETERS ////
-    ui->numMedianSegmentation->setValue(Controller::getInstance()->getMedianKernelSizeSegmentation());
-    ui->numBilateralSegmentation->setValue(Controller::getInstance()->getBilateralSigmaSegmentation());
+    //// SEGMENTATION PREPROCESSING DEFAULT PARAMETERS ////
+    ui->numMedianSegmentation->setValue(
+                Controller::getInstance()->getMedianKernelSizeSegmentation());
+    ui->numBilateralSegmentation->setValue(
+                Controller::getInstance()->getBilateralSigmaSegmentation());
 
     //// SEGMENTATION DEFAULT PARAMETERS ////
     ui->numSegmentationLineProfileColumnSpacing->setValue(
@@ -28,16 +30,40 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->numSegmentationCrownBinarizationPctThreshold->setValue(
                 Controller::getInstance()->getSegmentationCrownBinarizationPctThreshold());
 
-    /* Code for faster testing.
-     * Remove when done testing. */
+    //// SEGMENTATION PREPROCESSING DEFAULT PARAMETERS ////
+    ui->numMedianTracing->setValue(
+                Controller::getInstance()->getMedianKernelSizeTracing());
+    ui->numBilateralTracing->setValue(
+                Controller::getInstance()->getBilateralSigmaTracing());
+    ui->numSobelTracing->setValue(
+                Controller::getInstance()->getSobelKernelSizeTracing());
+    ui->cmbBilateralTracing->setCurrentIndex(
+                Controller::getInstance()->getSobelDerivativeType());
 
+    //// TRACING DEFAULT PARAMETERS ////
+
+
+
+
+    //// CODE FOR TESTING - REMOVE WHEN DONE TESTING ////
     QString filename = "/Users/regulrjoe/Documents/CIO/BiometriaDental/imgs/clean/cropped/0000012558_JOSE_ALBETO_SAUCEDO_Panorama_20161205112500.jpg";
     Controller::getInstance()->setInputImage(filename.toUtf8().data());
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+
+    ui->imgViewerSegmentation->showImage(
+                Controller::getInstance()->getFilteredImageSegmentation());
     ui->btnApplyMedianSegmentation->setEnabled(true);
     ui->btnApplyBilateralSegmentation->setEnabled(true);
     ui->btnClearImageSegmentation->setEnabled(true);
     ui->btnApplySegmentation->setEnabled(true);
+
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
+    ui->btnApplyMedianTracing->setEnabled(true);
+    ui->btnApplyBilateralTracing->setEnabled(true);
+    ui->btnApplySobelTracing->setEnabled(true);
+    ui->btnClearImageTracing->setEnabled(true);
+    ui->btnApplyTracing->setEnabled(true);
+    /////////////////////////////////////////////////////
 }
 
 MainWindow::~MainWindow()
@@ -56,14 +82,23 @@ void MainWindow::on_actionOpen_Image_triggered()
 
     if (filename != NULL) {
         if (Controller::getInstance()->setInputImage(filename.toUtf8().data())) {
-            ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+            ui->imgViewerSegmentation->showImage(
+                        Controller::getInstance()->getFilteredImageSegmentation());
             ui->btnApplyMedianSegmentation->setEnabled(true);
             ui->btnApplyBilateralSegmentation->setEnabled(true);
             ui->btnClearImageSegmentation->setEnabled(true);
             ui->btnApplySegmentation->setEnabled(true);
+
+            ui->imgViewerTracing->showImage(
+                        Controller::getInstance()->getFilteredImageTracing());
+            ui->btnApplyMedianTracing->setEnabled(true);
+            ui->btnApplyBilateralTracing->setEnabled(true);
+            ui->btnApplySobelTracing->setEnabled(true);
+            ui->btnClearImageTracing->setEnabled(true);
+            ui->btnApplyTracing->setEnabled(true);
         } else {
             std::cout << "Image loading failed." << std::endl;
-            QMessageBox::information(this, tr("Unable to open image"), tr("Select a valid image file."));
+            QMessageBox::warning(this, tr("Unable to open image"), tr("Select a valid image file."));
         }
     }
 }
@@ -72,35 +107,44 @@ void MainWindow::on_actionOpen_Image_triggered()
 void MainWindow::on_numMedianSegmentation_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setMedianKernelSizeSegmentation(arg1)) {
-        QMessageBox::information(this, tr("Invalid Median Filter Kernel Size"), tr("Kernel size must be greather or equal to 3, lower or equal to 15, and odd."));
-        ui->numMedianSegmentation->setValue(Controller::getInstance()->getMedianKernelSizeSegmentation());
+        QMessageBox::warning(this,
+                                 tr("Invalid Median Filter Kernel Size"),
+                                 tr("Kernel size must be greater or equal to 3, lower or equal to 15, and odd."));
+        ui->numMedianSegmentation->setValue(
+                    Controller::getInstance()->getMedianKernelSizeSegmentation());
     }
 }
 
 void MainWindow::on_numBilateralSegmentation_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setBilateralSigmaSegmentation(arg1)) {
-        QMessageBox::information(this, tr("Invalid Bilateral Filter Sigma"), tr("Sigma must be greather than 0 and lower or equal to 30."));
-        ui->numBilateralSegmentation->setValue(Controller::getInstance()->getBilateralSigmaSegmentation());
+        QMessageBox::warning(this,
+                                 tr("Invalid Bilateral Filter Sigma"),
+                                 tr("Sigma must be greater than 0 and lower or equal to 30."));
+        ui->numBilateralSegmentation->setValue(
+                    Controller::getInstance()->getBilateralSigmaSegmentation());
     }
 }
 
 void MainWindow::on_btnApplyMedianSegmentation_clicked()
 {
     Controller::getInstance()->applyMedianSegmentation();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+    ui->imgViewerSegmentation->showImage(
+                Controller::getInstance()->getFilteredImageSegmentation());
 }
 
 void MainWindow::on_btnApplyBilateralSegmentation_clicked()
 {
     Controller::getInstance()->applyBilateralSegmentation();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+    ui->imgViewerSegmentation->showImage(
+                Controller::getInstance()->getFilteredImageSegmentation());
 }
 
 void MainWindow::on_btnClearImageSegmentation_clicked()
 {
     Controller::getInstance()->resetImageSegmentation();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+    ui->imgViewerSegmentation->showImage(
+                Controller::getInstance()->getFilteredImageSegmentation());
 }
 
 void MainWindow::on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1)
@@ -141,7 +185,7 @@ void MainWindow::on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(doubl
     if (!Controller::getInstance()->setSegmentationNecksCurvesStdDevThreshold((float)arg1)) {
         QMessageBox::warning(this,
                              tr("Invalid Standard Deviation Threshold"),
-                             tr("The standard deviation threhsold must be greather than 0.00 and lower than 1.00"));
+                             tr("The standard deviation threhsold must be greater than 0.00 and lower than 1.00"));
         ui->numSegmentationNecksCurvesStdDevThreshold->setValue(
                     Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
     }
@@ -172,45 +216,78 @@ void MainWindow::on_numSegmentationCrownBinarizationPctThreshold_valueChanged(do
 void MainWindow::on_btnApplySegmentation_clicked()
 {
     Controller::getInstance()->runSegmentation();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+    ui->imgViewerSegmentation->showImage(
+                Controller::getInstance()->getFilteredImageSegmentation());
 }
 
 void MainWindow::on_numMedianTracing_valueChanged(int arg1)
 {
-
+    if (!Controller::getInstance()->setMedianKernelSizeTracing(arg1)) {
+        QMessageBox::warning(this,
+                                 tr("Invalid Median Filter Kernel Size"),
+                                 tr("Kernel size must be greater than or equal to 3, lower or equal to 15, and odd."));
+        ui->numMedianTracing->setValue(
+                    Controller::getInstance()->getMedianKernelSizeTracing());
+    }
 }
 
 void MainWindow::on_numBilateralTracing_valueChanged(int arg1)
 {
-
+    if (!Controller::getInstance()->setBilateralSigmaTracing(arg1)) {
+        QMessageBox::warning(this,
+                                 tr("Invalid Bilateral Filter Sigma"),
+                                 tr("Sigma must be greater than 0 and lower or equal to 30."));
+        ui->numBilateralTracing->setValue(
+                    Controller::getInstance()->getBilateralSigmaTracing());
+    }
 }
 
 void MainWindow::on_numSobelTracing_valueChanged(int arg1)
 {
-
+    if (!Controller::getInstance()->setSobelKernelSizeTracing(arg1)) {
+        QMessageBox::warning(this,
+                                 tr("Invalid Sobel Filter kernel size"),
+                                 tr("Kernel size must be greater than or equal to 1 and lower than or equal to 15."));
+        ui->numSobelTracing->setValue(
+                    Controller::getInstance()->getSobelKernelSizeTracing());
+    }
 }
 
 void MainWindow::on_cmbBilateralTracing_currentIndexChanged(int index)
 {
-
+    if (!Controller::getInstance()->setSobelDerivativeType(index)) {
+        QMessageBox::warning(this,
+                             tr("Invalid sobel derivative type"),
+                             tr("Sobel derivative type must be 0, 1, or 2."));
+        ui->cmbBilateralTracing->setCurrentIndex(
+                    Controller::getInstance()->getSobelDerivativeType());
+    }
 }
 
 void MainWindow::on_btnApplyMedianTracing_clicked()
 {
-
+    Controller::getInstance()->applyMedianTracing();
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
 }
 
 void MainWindow::on_btnApplyBilateralTracing_clicked()
 {
-
+    Controller::getInstance()->applyBilateralTracing();
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
 }
 
 void MainWindow::on_btnApplySobelTracing_clicked()
 {
-
+    Controller::getInstance()->applySobelTracing();
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
 }
 
 void MainWindow::on_btnClearImageTracing_clicked()
 {
-
+    Controller::getInstance()->resetImageTracing();
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
 }

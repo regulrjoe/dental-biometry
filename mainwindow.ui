@@ -101,6 +101,38 @@
       <property name="title">
        <string>Tracing</string>
       </property>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btnApplyTracing">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Apply Tracing</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QPushButton" name="btnClearImageTracing">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Clear Tracing Image</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QPushButton" name="btnClearImageSegmentation">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Clear Segmentation Image</string>
+      </property>
      </widget>
     </item>
     <item row="0" column="1">
@@ -296,6 +328,9 @@
        </item>
        <item row="1" column="3">
         <widget class="QPushButton" name="btnApplyBilateralTracing">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Apply</string>
          </property>
@@ -339,6 +374,9 @@
        </item>
        <item row="2" column="3">
         <widget class="QPushButton" name="btnApplySobelTracing">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Apply</string>
          </property>
@@ -347,32 +385,18 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0" colspan="4">
-     <widget class="CQtOpenCVViewerGl" name="imgViewer">
+    <item row="2" column="0" colspan="2">
+     <widget class="CQtOpenCVViewerGl" name="imgViewerSegmentation">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
+        <horstretch>1</horstretch>
         <verstretch>5</verstretch>
        </sizepolicy>
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QPushButton" name="btnClearImageSegmentation">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Clear Segmentation Image</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2" colspan="2">
-     <widget class="QPushButton" name="btnClearFiltersTracing">
-      <property name="text">
-       <string>Clear Tracing Image</string>
-      </property>
-     </widget>
+    <item row="2" column="2" colspan="2">
+     <widget class="CQtOpenCVViewerGl" name="imgViewerTracing"/>
     </item>
    </layout>
   </widget>

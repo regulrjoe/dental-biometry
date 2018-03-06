@@ -36,7 +36,8 @@ public:
         input_image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
         if (!input_image.data)
             return false;
-        input_image.copyTo(filtered_image);
+        input_image.copyTo(filtered_image_segmentation);
+        input_image.copyTo(filtered_image_tracing);
         return true;
     }
 
@@ -45,54 +46,57 @@ public:
         return input_image;
     }
 
-    // Get filtered image
-    cv::Mat getFilteredImage() {
-        return filtered_image;
+
+    //// SEGMENTATION PREPROCESSING ////
+    // Get segmentation filtered image
+    cv::Mat getFilteredImageSegmentation() {
+        return filtered_image_segmentation;
     }
 
-    void resetImage() {
-        input_image.copyTo(filtered_image);
+    // Reset segmentation image
+    void resetImageSegmentation() {
+        input_image.copyTo(filtered_image_segmentation);
     }
 
-    //// PREPROCESSING ////
-    // Apply Median Filter to filtered_image
-    void applyMedian() {
-        filtered_image = Filters::Median(filtered_image, median_kernel_size);
+    // Apply Median Filter to filtered_image for segmentation
+    void applyMedianSegmentation() {
+        filtered_image_segmentation = Filters::Median(filtered_image_segmentation, median_kernel_size_segmentation);
     }
 
-    // Apply Bilateral Filter to filtered_image
-    void applyBilateral() {
-        filtered_image = Filters::Bilateral(filtered_image, bilateral_sigma);
+    // Apply Bilateral Filter to filtered_image for segmentation
+    void applyBilateralSegmentation() {
+        filtered_image_segmentation = Filters::Bilateral(filtered_image_segmentation, bilateral_sigma_segmentation);
     }
 
-    // Set median kernel size
-    bool setMedianKernelSize(const int& k) {
+    // Set median kernel size for segmentation
+    bool setMedianKernelSizeSegmentation(const int& k) {
         if (k < 3 || k % 2 == 0 || k > 15)
             return false;
-        median_kernel_size = k;
+        median_kernel_size_segmentation = k;
         return true;
     }
-    // Get median kernel size
-    int getMedianKernelSize() {
-        return median_kernel_size;
+    // Get median kernel size for segmentation
+    int getMedianKernelSizeSegmentation() {
+        return median_kernel_size_segmentation;
     }
-    // Set bilateral sigma
-    bool setBilateralSigma(const int& s) {
+    // Set bilateral sigma for segmentation
+    bool setBilateralSigmaSegmentation(const int& s) {
         if (s < 1 || s > 30)
             return false;
-        bilateral_sigma = s;
+        bilateral_sigma_segmentation = s;
         return true;
     }
-    // Get bilateral sigma
-    int getBilateralSigma() {
-        return bilateral_sigma;
+    // Get bilateral sigma for segmentation
+    int getBilateralSigmaSegmentation() {
+        return bilateral_sigma_segmentation;
     }
+
 
     //// SEGMENTATION ////
     bool runSegmentation() {
         if (input_image.empty())
             return false;
-        filtered_image = segmentation->Process(filtered_image);
+        filtered_image_segmentation = segmentation->Process(filtered_image_segmentation);
         return true;
     }
 
@@ -112,13 +116,13 @@ public:
     int getSegmentationLineProfileDerivativeDistance() {
         return segmentation->getLineProfileDerivativeDistance();
     }
-    // Set Spline curve relative sample size of segmentation algorithm
-    bool setSegmentationSplineRelativeSampleSize(const float& ss) {
-        return segmentation->setSplineRelativeSampleSize(ss);
+    // Set Spline curve percentge sample size of segmentation algorithm
+    bool setSegmentationSplinePctSampleSize(const float& ss) {
+        return segmentation->setSplinePctSampleSize(ss);
     }
-    // Get Spline cruve relative sample size of segmentation algorithm
-    float getSegmentationSplineRelativeSampleSize() {
-        return segmentation->getSplineRelativeSampleSize();
+    // Get Spline cruve percentage sample size of segmentation algorithm
+    float getSegmentationSplinePctSampleSize() {
+        return segmentation->getSplinePctSampleSize();
     }
     // Set necks curves standard deviation threshold of segmentation algorithm
     bool setSegmentationNecksCurvesStdDevThreshold(const float& thr) {
@@ -145,6 +149,80 @@ public:
         return segmentation->getCrownBinarizationPctThreshold();
     }
 
+
+    //// TRACING PREPROCESSING ////
+    // Get tracing filtered image
+    cv::Mat getFilteredImageTracing() {
+        return filtered_image_tracing;
+    }
+
+    // Reset tracing image
+    void resetImageTracing() {
+        input_image.copyTo(filtered_image_tracing);
+    }
+
+    // Apply Median Filter to tracing filtered_image
+    void applyMedianTracing() {
+        filtered_image_tracing = Filters::Median(filtered_image_tracing, median_kernel_size_tracing);
+    }
+
+    // Apply Bilateral Filter to tracing filtered_image
+    void applyBilateralTracing() {
+        filtered_image_tracing = Filters::Bilateral(filtered_image_tracing, bilateral_sigma_tracing);
+    }
+
+    // Apply Sobel Filter to tracing filtered_image
+    void applySobelTracing() {
+        filtered_image_tracing = Filters::Sobel(filtered_image_tracing, sobel_kernel_size_tracing, sobel_derivative_type_tracing);
+    }
+
+    // Set median kernel size for tracing
+    bool setMedianKernelSizeTracing(const int& k) {
+        if (k < 3 || k % 2 == 0 || k > 15)
+            return false;
+        median_kernel_size_tracing = k;
+        return true;
+    }
+    // Get median kernel size for tracing
+    int getMedianKernelSizeTracing() {
+        return median_kernel_size_tracing;
+    }
+    // Set bilateral sigma for tracing
+    bool setBilateralSigmaTracing(const int& s) {
+        if (s < 1 || s > 30)
+            return false;
+        bilateral_sigma_tracing = s;
+        return true;
+    }
+    // Get bilateral sigma for tracing
+    int getBilateralSigmaTracing() {
+        return bilateral_sigma_tracing;
+    }
+    // Set sobel kernel size for tracing
+    bool setSobelKernelSizeTracing(const int& k) {
+        if (k < 1 || k % 2 == 0 || k > 15)
+            return false;
+        sobel_kernel_size_tracing = k;
+        return true;
+    }
+    // Get sobel kernel size for tracing
+    int getSobelKernelSizeTracing() {
+        return sobel_kernel_size_tracing;
+    }
+    // Set sobel derivative type for tracing
+    bool setSobelDerivativeType(const int& t) {
+        if (t < 0 || t > 2)
+            return false;
+        sobel_derivative_type_tracing = t;
+        return true;
+    }
+    // Get sobel derivative type for tracing
+    int getSobelDerivativeType() {
+        return sobel_derivative_type_tracing;
+    }
+
+    //// TRACING ////
+
 private:
     //// ATTRIBUTES ////
     // Pointer to singleton
@@ -153,12 +231,22 @@ private:
     Segmentation *segmentation;
     // Original input image
     cv::Mat input_image;
-    // Filtered image
-    cv::Mat filtered_image;
-    // Median Filter kernel size
-    int median_kernel_size = 5;
-    // Bilateral Filter sigma size/color
-    int bilateral_sigma = 9;
+    // Filtered image for segmentation algorithm
+    cv::Mat filtered_image_segmentation;
+    // Median Filter kernel size for segmentation algorithm
+    int median_kernel_size_segmentation = 5;
+    // Bilateral Filter sigma size/color for segmentation algorithm
+    int bilateral_sigma_segmentation = 9;
+    // Filtered image for tracing algorithm
+    cv::Mat filtered_image_tracing;
+    // Median filter kernel size for tracing algorithm
+    int median_kernel_size_tracing = 3;
+    // Bilateral filter sigma size/color for tracing algorithm
+    int bilateral_sigma_tracing = 11;
+    // Sobel filter kernel size for tracing algorithm
+    int sobel_kernel_size_tracing = 3;
+    // Sobel filter type for tracing algorithm
+    int sobel_derivative_type_tracing = 0;
 
     //// METHODS ////
     // Private constructor
