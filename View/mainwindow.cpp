@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "controller.h"
+#include "Controller/controller.h"
 #include <QFileDialog>
 #include <QMessageBox>
 

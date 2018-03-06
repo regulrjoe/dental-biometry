@@ -28,28 +28,31 @@ CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    segmentation.cpp \
-    tracing.cpp \
-    histogram.cpp \
-    controller.cpp \
-    helpers.cpp \
-    filters.cpp \
-    cqtopencvviewergl.cpp \
-    visualizationhelpers.cpp
+    Controller/controller.cpp \
+    Model/cqtopencvviewergl.cpp \
+    Model/filters.cpp \
+    Model/helpers.cpp \
+    Model/histogram.cpp \
+    Model/segmentation.cpp \
+    Model/tracing.cpp \
+    Model/visualizationhelpers.cpp \
+    View/mainwindow.cpp \
+    main.cpp
 
 HEADERS += \
-        mainwindow.h \
-    segmentation.h \
-    tracing.h \
-    histogram.h \
-    controller.h \
-    helpers.h \
-    spline.h \
-    filters.h \
-    cqtopencvviewergl.h \
-    visualizationhelpers.h
+    Controller/controller.h \
+    Model/cqtopencvviewergl.h \
+    Model/filters.h \
+    Model/helpers.h \
+    Model/histogram.h \
+    Model/segmentation.h \
+    Model/spline.h \
+    Model/tracing.h \
+    Model/visualizationhelpers.h \
+    View/mainwindow.h
 
 FORMS += \
-        mainwindow.ui
+    View/mainwindow.ui
+
+SUBDIRS += \
+    DentalBiometry.pro
