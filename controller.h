@@ -126,7 +126,23 @@ public:
     }
     // Get necks curves standard deviation threshold of segmentation algorithm
     float getSegmentationNecksCurvesStdDevThreshold() {
-        return segmentation->getNecksCurvesStdDevThrehsold();
+        return segmentation->getNecksCurvesStdDevThreshold();
+    }
+    // Set crown binarization number of segments of segmentation algorithm
+    bool setSegmentationCrownBinarizationNumOfSegments(const int& n) {
+        return segmentation->setCrownBinarizationNumOfSegments(n);
+    }
+    // Get crown binarization number of segments of segmentation algorithm
+    int getSegmentationCrownBinarizationNumOfSegments() {
+        return segmentation->getCrownBinarizationNumOfSegments();
+    }
+    // Set crown binarization percentage threshold of segmentation algorithm
+    bool setSegmentationCrownBinarizationPctThreshold(const float& thr) {
+        return segmentation->setCrownBinarizationPctThreshold(thr);
+    }
+    // Get crown binarization percentage threshold of segmentation algorithm
+    float getSegmentationCrownBinarizationPctThreshold() {
+        return segmentation->getCrownBinarizationPctThreshold();
     }
 
 private:

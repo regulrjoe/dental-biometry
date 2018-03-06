@@ -15,10 +15,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->numBilateral->setValue(Controller::getInstance()->getBilateralSigma());
 
     //// SEGMENTATION DEFAULT PARAMETERS ////
-    ui->numSegmentationLineProfileColumnSpacing->setValue(Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
-    ui->numSegmentationLineProfileDerivativeDistance->setValue(Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
-    ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
-    ui->numSegmentationNecksCurvesStdDevThreshold->setValue(Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
+    ui->numSegmentationLineProfileColumnSpacing->setValue(
+                Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
+    ui->numSegmentationLineProfileDerivativeDistance->setValue(
+                Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
+    ui->numSegmentationSplinePctSampleSize->setValue(
+                Controller::getInstance()->getSegmentationSplinePctSampleSize());
+    ui->numSegmentationNecksCurvesStdDevThreshold->setValue(
+                Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
+    ui->numSegmentationCrownBinarizationNumOfSegments->setValue(
+                Controller::getInstance()->getSegmentationCrownBinarizationNumOfSegments());
+    ui->numSegmentationCrownBinarizationPctThreshold->setValue(
+                Controller::getInstance()->getSegmentationCrownBinarizationPctThreshold());
 
     /* Code for faster testing.
      * Remove when done testing. */

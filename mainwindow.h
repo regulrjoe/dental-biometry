@@ -36,6 +36,14 @@ private slots:
 
     void on_numSegmentationLineProfileDerivativeDistance_valueChanged(int arg1);
 
+    void on_numSegmentationSplinePctSampleSize_valueChanged(double arg1);
+
+    void on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(double arg1);
+
+    void on_numSegmentationCrownBinarizationNumOfSegments_valueChanged(int arg1);
+
+    void on_numSegmentationCrownBinarizationPctThreshold_valueChanged(double arg1);
+
     void on_btnApplySegmentation_clicked();
 
     void on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1);

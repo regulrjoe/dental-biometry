@@ -10,14 +10,19 @@ using namespace std;
 class Segmentation
 {
 public:
-    // Empty constructor
-    Segmentation() : _lineprofile_column_spacing(5), _lineprofile_derivative_distance(5), _spline_relative_sample_size(0.2), _neck_sd_threshold(0.45) {
-        cout << "Create instance of Segmentation." << endl;
+    // Empty default constructor
+    Segmentation() : _lineprofile_column_spacing(5),
+        _lineprofile_derivative_distance(5),
+        _spline_pct_sample_size(0.2),
+        _neck_sd_threshold(0.45),
+        _crown_binarization_n_segments(30),
+        _crown_binarization_pct_threshold(0.25) {
+        cout << "Created instance of Segmentation." << endl;
     }
 
     // Destructor
     ~Segmentation() {
-        cout << "Destroying instance of Segmentation." << endl;
+        cout << "Destroyed instance of Segmentation." << endl;
     }
 
     // Run algorithm
@@ -47,16 +52,16 @@ public:
     int getLineProfileDerivativeDistance() {
         return _lineprofile_derivative_distance;
     }
-    // Set Spline curve relative sample size
-    bool setSplineRelativeSampleSize(const float& ss) {
+    // Set Spline curve percentage sample size
+    bool setSplinePctSampleSize(const float& ss) {
         if (ss <= 0 || ss > 1)
             return false;
-        _spline_relative_sample_size = ss;
+        _spline_pct_sample_size = ss;
         return true;
     }
-    // Get Spline curve relative sample size
-    float getSplineRelativeSampleSize() {
-        return _spline_relative_sample_size;
+    // Get Spline curve percentage sample size
+    float getSplinePctSampleSize() {
+        return _spline_pct_sample_size;
     }
     // Set necks curves standard deviation threhsold
     bool setNecksCurvesStdDevThreshold(const float& thr) {
@@ -66,13 +71,35 @@ public:
         return true;
     }
     // Get necks curves standard deviation threhsold
-    float getNecksCurvesStdDevThrehsold() {
+    float getNecksCurvesStdDevThreshold() {
         return _neck_sd_threshold;
+    }
+    // Set crowns binarization number of segments
+    bool setCrownBinarizationNumOfSegments(const int& n) {
+        if (n < 1 || n > 100)
+            return false;
+        _crown_binarization_n_segments = n;
+        return true;
+    }
+    // Get crowns binarization number of segments
+    int getCrownBinarizationNumOfSegments() {
+        return _crown_binarization_n_segments;
+    }
+    // Set crowns binarization percentage threshold
+    bool setCrownBinarizationPctThreshold(const float& thr) {
+        if (thr <= 0 || thr >= 1)
+            return false;
+        _crown_binarization_pct_threshold = thr;
+        return true;
+    }
+    // Get crowns binarization percentage threshold
+    float getCrownBinarizationPctThreshold() {
+        return _crown_binarization_pct_threshold;
     }
 
 private:
     //// INTERNAL OBJECTS ////
-    // Local copy of input image
+    // Local copy of input image for processing
     cv::Mat _image;
     // Local copy of _image for drawing and displaying
     cv::Mat _display_image;
@@ -89,9 +116,13 @@ private:
     // Distance between values in line profile to derive
     int _lineprofile_derivative_distance;
     // Sample size of crown points for adjusting Spline curve
-    float _spline_relative_sample_size;
+    float _spline_pct_sample_size;
     // Std Dev threshold for finding the necks curve
     float _neck_sd_threshold;
+    // Number of segments for binarization of crowns
+    int _crown_binarization_n_segments;
+    // Percanetage threhsold for binariation of crowns
+    float _crown_binarization_pct_threshold;
 
     //// METHODS ////
     // Obtain derivatives of the vertical line profiles of image
@@ -108,6 +139,9 @@ private:
 
     // Translate crowns curve to find teeth's neck
     void AdjustNecksCurve(const float&);
+
+    // Binarize crowns to more easily find the gaps between teeth
+    void BinarizeCrowns(const int&, const float&);
 
     // Show display image
     void ShowDisplayImage();
