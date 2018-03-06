@@ -18,19 +18,15 @@ public:
 private slots:
     void on_actionOpen_Image_triggered();
 
-    void on_sliderMedian_valueChanged(int value);
+    void on_numMedianSegmentation_valueChanged(int arg1);
 
-    void on_sliderBilateral_valueChanged(int value);
+    void on_numBilateralSegmentation_valueChanged(int arg1);
 
-    void on_numMedian_valueChanged(int arg1);
+    void on_btnApplyMedianSegmentation_clicked();
 
-    void on_numBilateral_valueChanged(int arg1);
+    void on_btnApplyBilateralSegmentation_clicked();
 
-    void on_btnApplyMedian_clicked();
-
-    void on_btnApplyBilateral_clicked();
-
-    void on_btnClearFilters_clicked();
+    void on_btnClearFiltersSegmentation_clicked();
 
     void on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1);
 
@@ -46,9 +42,21 @@ private slots:
 
     void on_btnApplySegmentation_clicked();
 
-    void on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1);
+    void on_numMedianTracing_valueChanged(int arg1);
 
-    void on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(double arg1);
+    void on_numBilateralTracing_valueChanged(int arg1);
+
+    void on_numSobelTracing_valueChanged(int arg1);
+
+    void on_cmbBilateralTracing_currentIndexChanged(int index);
+
+    void on_btnApplyMedianTracing_clicked();
+
+    void on_btnApplyBilateralTracing_clicked();
+
+    void on_btnApplySobelTracing_clicked();
+
+    void on_btnClearImageTracing_clicked();
 
 private:
     Ui::MainWindow *ui;

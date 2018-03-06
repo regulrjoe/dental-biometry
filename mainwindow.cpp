@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     //// PREPROCESSING DEFAULT PARAMETERS ////
-    ui->numMedian->setValue(Controller::getInstance()->getMedianKernelSize());
-    ui->numBilateral->setValue(Controller::getInstance()->getBilateralSigma());
+    ui->numMedianSegmentation->setValue(Controller::getInstance()->getMedianKernelSizeSegmentation());
+    ui->numBilateralSegmentation->setValue(Controller::getInstance()->getBilateralSigmaSegmentation());
 
     //// SEGMENTATION DEFAULT PARAMETERS ////
     ui->numSegmentationLineProfileColumnSpacing->setValue(
@@ -33,10 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString filename = "/Users/regulrjoe/Documents/CIO/BiometriaDental/imgs/clean/cropped/0000012558_JOSE_ALBETO_SAUCEDO_Panorama_20161205112500.jpg";
     Controller::getInstance()->setInputImage(filename.toUtf8().data());
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
-    ui->btnApplyMedian->setEnabled(true);
-    ui->btnApplyBilateral->setEnabled(true);
-    ui->btnClearFilters->setEnabled(true);
+    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+    ui->btnApplyMedianSegmentation->setEnabled(true);
+    ui->btnApplyBilateralSegmentation->setEnabled(true);
+    ui->btnClearImageSegmentation->setEnabled(true);
     ui->btnApplySegmentation->setEnabled(true);
 }
 
@@ -56,10 +56,10 @@ void MainWindow::on_actionOpen_Image_triggered()
 
     if (filename != NULL) {
         if (Controller::getInstance()->setInputImage(filename.toUtf8().data())) {
-            ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
-            ui->btnApplyMedian->setEnabled(true);
-            ui->btnApplyBilateral->setEnabled(true);
-            ui->btnClearFilters->setEnabled(true);
+            ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+            ui->btnApplyMedianSegmentation->setEnabled(true);
+            ui->btnApplyBilateralSegmentation->setEnabled(true);
+            ui->btnClearImageSegmentation->setEnabled(true);
             ui->btnApplySegmentation->setEnabled(true);
         } else {
             std::cout << "Image loading failed." << std::endl;
@@ -68,93 +68,149 @@ void MainWindow::on_actionOpen_Image_triggered()
     }
 }
 
-void MainWindow::on_sliderMedian_valueChanged(int value)
+
+void MainWindow::on_numMedianSegmentation_valueChanged(int arg1)
 {
-    if (!Controller::getInstance()->setMedianKernelSize((value*2)+1)) {
+    if (!Controller::getInstance()->setMedianKernelSizeSegmentation(arg1)) {
         QMessageBox::information(this, tr("Invalid Median Filter Kernel Size"), tr("Kernel size must be greather or equal to 3, lower or equal to 15, and odd."));
-        ui->sliderMedian->setValue((Controller::getInstance()->getMedianKernelSize()+1)/2);
+        ui->numMedianSegmentation->setValue(Controller::getInstance()->getMedianKernelSizeSegmentation());
     }
-    ui->numMedian->setValue(Controller::getInstance()->getMedianKernelSize());
 }
 
-void MainWindow::on_sliderBilateral_valueChanged(int value)
+void MainWindow::on_numBilateralSegmentation_valueChanged(int arg1)
 {
-    if (!Controller::getInstance()->setBilateralSigma(value)) {
+    if (!Controller::getInstance()->setBilateralSigmaSegmentation(arg1)) {
         QMessageBox::information(this, tr("Invalid Bilateral Filter Sigma"), tr("Sigma must be greather than 0 and lower or equal to 30."));
-        ui->sliderBilateral->setValue(Controller::getInstance()->getBilateralSigma());
+        ui->numBilateralSegmentation->setValue(Controller::getInstance()->getBilateralSigmaSegmentation());
     }
-    ui->numBilateral->setValue(Controller::getInstance()->getBilateralSigma());
 }
 
-void MainWindow::on_numMedian_valueChanged(int arg1)
+void MainWindow::on_btnApplyMedianSegmentation_clicked()
 {
-    if (!Controller::getInstance()->setMedianKernelSize(arg1)) {
-        QMessageBox::information(this, tr("Invalid Median Filter Kernel Size"), tr("Kernel size must be greather or equal to 3, lower or equal to 15, and odd."));
-        ui->numMedian->setValue(Controller::getInstance()->getMedianKernelSize());
-    }
-    ui->sliderMedian->setValue((Controller::getInstance()->getMedianKernelSize()-1)/2);
+    Controller::getInstance()->applyMedianSegmentation();
+    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
 }
 
-void MainWindow::on_numBilateral_valueChanged(int arg1)
+void MainWindow::on_btnApplyBilateralSegmentation_clicked()
 {
-    if (!Controller::getInstance()->setBilateralSigma(arg1)) {
-        QMessageBox::information(this, tr("Invalid Bilateral Filter Sigma"), tr("Sigma must be greather than 0 and lower or equal to 30."));
-        ui->numBilateral->setValue(Controller::getInstance()->getBilateralSigma());
-    }
-    ui->sliderBilateral->setValue(Controller::getInstance()->getBilateralSigma());
+    Controller::getInstance()->applyBilateralSegmentation();
+    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
 }
 
-void MainWindow::on_btnApplyMedian_clicked()
+void MainWindow::on_btnClearImageSegmentation_clicked()
 {
-    Controller::getInstance()->applyMedian();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
-}
-
-void MainWindow::on_btnApplyBilateral_clicked()
-{
-    Controller::getInstance()->applyBilateral();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
-}
-
-void MainWindow::on_btnClearFilters_clicked()
-{
-    Controller::getInstance()->resetImage();
-    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImage());
+    Controller::getInstance()->resetImageSegmentation();
+    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
 }
 
 void MainWindow::on_numSegmentationLineProfileColumnSpacing_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setSegmentationLineProfileColumnSpacing(arg1)) {
-        QMessageBox::warning(this, tr("Invalid Column Spacing"), tr("Column spacing must be greater than 0 and equal to or lower than 100."));
-        ui->numSegmentationLineProfileColumnSpacing->setValue(Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
+        QMessageBox::warning(this,
+                             tr("Invalid Column Spacing"),
+                             tr("Column spacing must be greater than 0 and equal to or lower than 100."));
+        ui->numSegmentationLineProfileColumnSpacing->setValue(
+                    Controller::getInstance()->getSegmentationLineProfileColumnSpacing());
     }
 }
 
 void MainWindow::on_numSegmentationLineProfileDerivativeDistance_valueChanged(int arg1)
 {
     if (!Controller::getInstance()->setSegmentationLineProfileDerivativeDistance(arg1)) {
-        QMessageBox::warning(this, tr("Invalid Derivative Distance"), tr("Derivative distance must be greater than 0 and equal to or lower than 100."));
-        ui->numSegmentationLineProfileDerivativeDistance->setValue(Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
+        QMessageBox::warning(this,
+                             tr("Invalid Derivative Distance"),
+                             tr("Derivative distance must be greater than 0 and equal to or lower than 100."));
+        ui->numSegmentationLineProfileDerivativeDistance->setValue(
+                    Controller::getInstance()->getSegmentationLineProfileDerivativeDistance());
     }
 }
 
-void MainWindow::on_numSegmentationSplineRelativeSampleSize_valueChanged(double arg1)
+void MainWindow::on_numSegmentationSplinePctSampleSize_valueChanged(double arg1)
 {
-    if (!Controller::getInstance()->setSegmentationSplineRelativeSampleSize((float)arg1)) {
-        QMessageBox::warning(this, tr("Invalid Spline Curve Relative Sample Size"), tr("The relative sample size must be greater than 0.00 and equal to or lower than 1.00"));
-        ui->numSegmentationSplineRelativeSampleSize->setValue(Controller::getInstance()->getSegmentationSplineRelativeSampleSize());
+    if (!Controller::getInstance()->setSegmentationSplinePctSampleSize((float)arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Spline Curve Percentage Sample Size"),
+                             tr("The percentage sample size must be greater than 0.00 and equal to or lower than 1.00"));
+        ui->numSegmentationSplinePctSampleSize->setValue(
+                    Controller::getInstance()->getSegmentationSplinePctSampleSize());
     }
 }
 
 void MainWindow::on_numSegmentationNecksCurvesStdDevThreshold_valueChanged(double arg1)
 {
     if (!Controller::getInstance()->setSegmentationNecksCurvesStdDevThreshold((float)arg1)) {
-        QMessageBox::warning(this, tr("Invalid Standard Deviation Threshold"), tr("The standard deviation threhsold must be greather than 0.00 and lower than 1.00"));
-        ui->numSegmentationNecksCurvesStdDevThreshold->setValue(Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
+        QMessageBox::warning(this,
+                             tr("Invalid Standard Deviation Threshold"),
+                             tr("The standard deviation threhsold must be greather than 0.00 and lower than 1.00"));
+        ui->numSegmentationNecksCurvesStdDevThreshold->setValue(
+                    Controller::getInstance()->getSegmentationNecksCurvesStdDevThreshold());
+    }
+}
+
+void MainWindow::on_numSegmentationCrownBinarizationNumOfSegments_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setSegmentationCrownBinarizationNumOfSegments(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Number of Segments"),
+                             tr("The number of segments must be greater than 0 and lower than 100."));
+        ui->numSegmentationCrownBinarizationNumOfSegments->setValue(
+                    Controller::getInstance()->getSegmentationCrownBinarizationNumOfSegments());
+    }
+}
+
+void MainWindow::on_numSegmentationCrownBinarizationPctThreshold_valueChanged(double arg1)
+{
+    if (!Controller::getInstance()->setSegmentationCrownBinarizationPctThreshold((float)arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Percentage Threhsold"),
+                             tr("The percentage threshold must be greater than 0 and lower than 1."));
+        ui->numSegmentationCrownBinarizationPctThreshold->setValue(
+                    Controller::getInstance()->getSegmentationCrownBinarizationPctThreshold());
     }
 }
 
 void MainWindow::on_btnApplySegmentation_clicked()
 {
     Controller::getInstance()->runSegmentation();
+    ui->imgViewer->showImage(Controller::getInstance()->getFilteredImageSegmentation());
+}
+
+void MainWindow::on_numMedianTracing_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_numBilateralTracing_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_numSobelTracing_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_cmbBilateralTracing_currentIndexChanged(int index)
+{
+
+}
+
+void MainWindow::on_btnApplyMedianTracing_clicked()
+{
+
+}
+
+void MainWindow::on_btnApplyBilateralTracing_clicked()
+{
+
+}
+
+void MainWindow::on_btnApplySobelTracing_clicked()
+{
+
+}
+
+void MainWindow::on_btnClearImageTracing_clicked()
+{
+
 }
