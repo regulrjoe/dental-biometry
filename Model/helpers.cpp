@@ -34,6 +34,11 @@ double Helpers::GetAngle(const cv::Point &p1, const cv::Point &p2, const bool &d
     return angle;
 }
 
+// Check if a vector contains a point
+bool Helpers::HasPoint(const cv::Point& p, const std::vector<cv::Point>& v) {
+    return find(v.begin(), v.end(), p) != v.end();
+}
+
 // Extrapolate a coordinate linearly from the angle
 cv::Point Helpers::LinearExtrapolation(const cv::Point &anchor, const double &angle, const int &distance) {
     cv::Point ex;
@@ -267,4 +272,21 @@ std::vector<cv::Point> Helpers::FitSpline(const std::vector<cv::Point>& v, const
         curve.push_back(cv::Point(i, spline(i)));
 
     return curve;
+}
+
+// Get the sum of the pixel's value in a current pixel's neighborhood
+int Helpers::SumOfNeighbors(const cv::Mat& img, const cv::Point& p, const int& k_size) {
+
+    int sum;
+    int x, y;
+
+    sum = img.at<uchar>(p) * -1;
+    for (x = -1 * (k_size / 2); x <= (k_size / 2); x++)
+        for (y = -1 * (k_size / 2); y <= (k_size / 2); y++)
+            sum += img.at<uchar>(
+                        cv::Point(
+                            p.x + x,
+                            p.y + y));
+
+    return sum;
 }

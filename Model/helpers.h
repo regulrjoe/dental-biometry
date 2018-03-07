@@ -13,6 +13,9 @@ public:
     // Get the angle of two pixels
     static double GetAngle(const cv::Point&, const cv::Point&, const bool& = true);
 
+    // Check if a vector contains a point
+    static bool HasPoint(const cv::Point&, const std::vector<cv::Point>&);
+
     // Extrapolate a coordinate linearly from the angle
     static cv::Point LinearExtrapolation(const cv::Point&, const double&, const int&);
 
@@ -42,6 +45,9 @@ public:
 
     // Fit a Spline function line to a group of points
     static std::vector<cv::Point> FitSpline(const std::vector<cv::Point>&, const int&, const int&, const int& = -1);
+
+    // Get the sum of the pixel's value in a current pixel's neighborhood
+    static int SumOfNeighbors(const cv::Mat&, const cv::Point&, const int&);
 
 private:
     // Disallow creating an instance of this object
