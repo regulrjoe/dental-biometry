@@ -3,6 +3,7 @@
 
 #include "Model/segmentation.h"
 #include "Model/filters.h"
+#include "Model/tracing.h"
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -29,6 +30,7 @@ public:
     // Delete processor objects created by controller
     ~Controller() {
         delete segmentation;
+        delete tracing;
     }
 
     // Read image from file and set as input image
@@ -223,12 +225,69 @@ public:
 
     //// TRACING ////
 
+    bool runTracing() {
+        if (input_image.empty())
+            return false;
+        filtered_image_tracing = tracing->Process(filtered_image_tracing);
+        return true;
+    }
+
+    // Set slope and angle distance measurement.
+    bool setTracingSlopeAngleDistance(const int& d) {
+        return tracing->setSlopeAngleDistance(d);
+    }
+    // Get slope and angle distance measurement.
+    int getTracingSlopeAngleDistance() {
+        return tracing->getSlopeAngleDistance();
+    }
+    // Set intensity threshold for finding the first pixel of contour.
+    bool setTracingFirstPixelIntensityThreshold(const int& thr) {
+        return tracing->setFirstPixelIntensityThreshold(thr);
+    }
+    // Get intensity threshold for finding the first pixel of contour.
+    int getTracingFirstPixelIntensityThreshold() {
+        return tracing->getFirstPixelIntensityThreshold();
+    }
+    // Set inner margin for finding the first pixel of contour.
+    bool setTracingFirstPixelInnerMargin(const int& m) {
+        return tracing->setFirstPixelInnerMargin(m);
+    }
+    // Get inner margin for finding the first pixel of contour.
+    int getTracingFirstPixelInnerMargin() {
+        return tracing->getFirstPixelInnerMargin();
+    }
+    // Set relative max height of crown tracing
+    bool setTracingCrownTracingMaxPctHeight(const float& h) {
+        return tracing->setCrownTracingMaxPctHeight(h);
+    }
+    // Get relative max height of crown tracing
+    float getTracingCrownTracingMaxPctHeight() {
+        return tracing->getCrownTracingMaxPctHeight();
+    }
+    // Set the extrapolation distance for crown tracing
+    bool setTracingCrownTracingExtrapolationDistance(const int& d) {
+        return tracing->setCrownTracingExtrapolationDistance(d);
+    }
+    // Get the extrapolation distance for crown tracing
+    int getTracingCrownTracingExtrapolationDistance() {
+        return tracing->getCrownTracingExtrapolationDistance();
+    }
+    // Set mask of fittest pixel finding for crown tracing
+    bool setTracingCrownTracingExtrapolationMask(const int& m) {
+        return tracing->setCrownTracingExtrapolationMask(m);
+    }
+    // Get mask of fittest pixel finding for crown tracing
+    int getTracingCrownTracingExtrapolationMask() {
+        return tracing->getCrownTracingExtrapolationMask();
+    }
 private:
-    //// ATTRIBUTES ////
+    //// INTERNAL OBJECTS ////
     // Pointer to singleton
     static Controller *singleton;
     // Segmentation class instance
     Segmentation *segmentation;
+    // Tracing class instance
+    Tracing *tracing;
     // Original input image
     cv::Mat input_image;
     // Filtered image for segmentation algorithm
@@ -240,19 +299,21 @@ private:
     // Filtered image for tracing algorithm
     cv::Mat filtered_image_tracing;
     // Median filter kernel size for tracing algorithm
-    int median_kernel_size_tracing = 3;
+    int median_kernel_size_tracing = 5;
     // Bilateral filter sigma size/color for tracing algorithm
-    int bilateral_sigma_tracing = 11;
+    int bilateral_sigma_tracing = 12;
     // Sobel filter kernel size for tracing algorithm
-    int sobel_kernel_size_tracing = 3;
+    int sobel_kernel_size_tracing = 1;
     // Sobel filter type for tracing algorithm
     int sobel_derivative_type_tracing = 0;
+
 
     //// METHODS ////
     // Private constructor
     Controller() {
         // Setting up the application
         segmentation = new Segmentation();
+        tracing = new Tracing();
     }
 };
 
