@@ -213,28 +213,30 @@ cv::Mat Filters::LocalBinarization(const cv::Mat& input, float pct_thr, const in
 //          -> 1 = horizontal
 //          -> 2 = vertical
 cv::Mat Filters::Sobel(const cv::Mat& input, const int& k_size, const int& d_type) {
+    std::cout << "Applying Sobel filter with kernel size " << k_size << " and direction " << d_type << std::endl;
     cv::Mat output,
             horizontal,
-            vertical;
+            vertical,
+            abs_horizontal,
+            abs_vertical;
 
-    if (d_type == 0 || d_type == 1)
+    if (d_type == 0 || d_type == 1) {
         cv::Sobel(input, horizontal, CV_32F, 1, 0, k_size);
-    if (d_type == 0 || d_type == 2)
+        cv::convertScaleAbs(horizontal, abs_horizontal);
+    }
+    if (d_type == 0 || d_type == 2) {
         cv::Sobel(input, vertical, CV_32F, 0, 1, k_size);
+        cv::convertScaleAbs(vertical, abs_vertical);
+    }
 
     if (d_type == 0) {
-        cv::Mat magnitude;
-        cv::magnitude(horizontal, vertical, magnitude);
-
-        cv::normalize(magnitude, output, 0, 255, cv::NORM_MINMAX, CV_8U);
-    } else if (d_type == 1) {
-        cv::Mat abs_horizontal;
-        cv::convertScaleAbs(horizontal, abs_horizontal);
-
+//        cv::Mat magnitude;
+//        cv::magnitude(horizontal, vertical, magnitude);
+//        cv::normalize(magnitude, output, 0, 255, cv::NORM_MINMAX, CV_8U);
+        cv::addWeighted(abs_horizontal, 0.5, abs_vertical, 0.5, 0, output, CV_8U);
+    } else if (d_type == 1) {   
         abs_horizontal.copyTo(output);
     } else if (d_type == 2) {
-        cv::Mat abs_vertical;
-        cv::convertScaleAbs(vertical, abs_vertical);
         abs_vertical.copyTo(output);
     }
 
