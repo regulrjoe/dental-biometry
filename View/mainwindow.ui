@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
-    <height>763</height>
+    <width>1289</width>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -102,7 +102,106 @@
        <string>Tracing</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
+       <item row="3" column="1">
+        <widget class="QDoubleSpinBox" name="numTracingCrownTraceMaxPctHeight">
+         <property name="minimum">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.050000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="numTracingFirstPixelIntensityThreshold">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QSpinBox" name="numTracingCrownTraceExtrapolationMaskSize">
+         <property name="minimum">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <number>2</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="numTracingCrownTraceExtrapolationDistance">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="numTracingSlopeAndAngleDistance">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="numTracingFirstPixelInnerMargin">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
+        <widget class="QLabel" name="lblTracingSlopeAndAngleDistance">
+         <property name="text">
+          <string>Slope and angle distance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labellblTracingFirstPrixelIntensityThreshold">
+         <property name="text">
+          <string>First pixel intensity threshold</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lblTracingFirstPixelInnerMargin">
+         <property name="text">
+          <string>First pixel inner margin</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lblTracingCrownTraceMaxPctHeight">
+         <property name="text">
+          <string>Crown trace max % height</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lblTracingCrownTraceExtrapoliationDistance">
+         <property name="text">
+          <string>Crown trace extrapolation distance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="lblTracingCrownTraceExtrapolationMaskSize">
+         <property name="text">
+          <string>Crown trace extrapolation mask size</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="2">
         <widget class="QPushButton" name="btnApplyTracing">
          <property name="enabled">
           <bool>false</bool>
@@ -405,7 +504,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1174</width>
+     <width>1289</width>
      <height>22</height>
     </rect>
    </property>

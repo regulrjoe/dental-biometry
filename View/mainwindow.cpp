@@ -41,8 +41,18 @@ MainWindow::MainWindow(QWidget *parent) :
                 Controller::getInstance()->getSobelDerivativeType());
 
     //// TRACING DEFAULT PARAMETERS ////
-
-
+    ui->numTracingSlopeAndAngleDistance->setValue(
+                Controller::getInstance()->getTracingSlopeAngleDistance());
+    ui->numTracingFirstPixelIntensityThreshold->setValue(
+                Controller::getInstance()->getTracingFirstPixelIntensityThreshold());
+    ui->numTracingFirstPixelInnerMargin->setValue(
+                Controller::getInstance()->getTracingFirstPixelInnerMargin());
+    ui->numTracingCrownTraceMaxPctHeight->setValue(
+                Controller::getInstance()->getTracingCrownTracingMaxPctHeight());
+    ui->numTracingCrownTraceExtrapolationDistance->setValue(
+                Controller::getInstance()->getTracingCrownTracingExtrapolationDistance());
+    ui->numTracingCrownTraceExtrapolationMaskSize->setValue(
+                Controller::getInstance()->getTracingCrownTracingExtrapolationMask());
 
 
     //// CODE FOR TESTING - REMOVE WHEN DONE TESTING ////
@@ -288,6 +298,79 @@ void MainWindow::on_btnApplySobelTracing_clicked()
 void MainWindow::on_btnClearImageTracing_clicked()
 {
     Controller::getInstance()->resetImageTracing();
+    ui->imgViewerTracing->showImage(
+                Controller::getInstance()->getFilteredImageTracing());
+}
+
+void MainWindow::on_numTracingSlopeAndAngleDistance_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setTracingSlopeAngleDistance(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Slope and Angle distance"),
+                             tr("Slope and angle distance must be greather than 0."));
+        ui->numTracingSlopeAndAngleDistance->setValue(
+                    Controller::getInstance()->getTracingSlopeAngleDistance());
+    }
+}
+
+void MainWindow::on_numTracingFirstPixelIntensityThreshold_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setTracingFirstPixelIntensityThreshold(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Pixel Intensity Threshold"),
+                             tr("Intensity threshold must be greather than 0, and lower than 256."));
+        ui->numTracingFirstPixelIntensityThreshold->setValue(
+                    Controller::getInstance()->getTracingFirstPixelIntensityThreshold());
+    }
+}
+
+void MainWindow::on_numTracingFirstPixelInnerMargin_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setTracingFirstPixelInnerMargin(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Inner Margin"),
+                             tr("Inner margin must be equal to or greather than 0, and equal to or lower than 100."));
+        ui->numTracingFirstPixelInnerMargin->setValue(
+                    Controller::getInstance()->getTracingFirstPixelInnerMargin());
+    }
+}
+
+void MainWindow::on_numTracingCrownTraceMaxPctHeight_valueChanged(double arg1)
+{
+    if (!Controller::getInstance()->setTracingCrownTracingMaxPctHeight((float)arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Max % Height"),
+                             tr("Max Percentage Height must be greathen than 0 and lower than 1."));
+        ui->numTracingCrownTraceMaxPctHeight->setValue(
+                    Controller::getInstance()->getTracingCrownTracingMaxPctHeight());
+    }
+}
+
+void MainWindow::on_numTracingCrownTraceExtrapolationDistance_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setTracingCrownTracingExtrapolationDistance(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Extrapolation Distance"),
+                             tr("Extrapolation distance must be greather than 0 and lower than 100."));
+        ui->numTracingCrownTraceExtrapolationDistance->setValue(
+                    Controller::getInstance()->getTracingCrownTracingExtrapolationDistance());
+    }
+}
+
+void MainWindow::on_numTracingCrownTraceExtrapolationMaskSize_valueChanged(int arg1)
+{
+    if (!Controller::getInstance()->setTracingCrownTracingExtrapolationMask(arg1)) {
+        QMessageBox::warning(this,
+                             tr("Invalid Extrapolation Mask Size"),
+                             tr("Extrapolation sask size must be equal to or greather than 3, and must be an odd number."));
+        ui->numTracingCrownTraceExtrapolationMaskSize->setValue(
+                    Controller::getInstance()->getTracingCrownTracingExtrapolationMask());
+    }
+}
+
+void MainWindow::on_btnApplyTracing_clicked()
+{
+    Controller::getInstance()->runTracing();
     ui->imgViewerTracing->showImage(
                 Controller::getInstance()->getFilteredImageTracing());
 }

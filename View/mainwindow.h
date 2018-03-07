@@ -58,6 +58,20 @@ private slots:
 
     void on_btnClearImageTracing_clicked();
 
+    void on_numTracingSlopeAndAngleDistance_valueChanged(int arg1);
+
+    void on_numTracingFirstPixelIntensityThreshold_valueChanged(int arg1);
+
+    void on_numTracingFirstPixelInnerMargin_valueChanged(int arg1);
+
+    void on_numTracingCrownTraceMaxPctHeight_valueChanged(double arg1);
+
+    void on_numTracingCrownTraceExtrapolationDistance_valueChanged(int arg1);
+
+    void on_numTracingCrownTraceExtrapolationMaskSize_valueChanged(int arg1);
+
+    void on_btnApplyTracing_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
